@@ -17,43 +17,43 @@ Entities["Player"] = {
             this.dir = "b";
             VP.setCameraTarget(this);
 
-            this.attBtn = UI.addButton("a", VP.getWidth() - 120, VP.getHeight() - 120, 50, 50, GFX.createSprite("ui", 0, 0, 50, 50), GFX.createSprite("ui", 50, 0, 50, 50));
-            this.joy = UI.addJoystick("j", 0, VP.getHeight()/2, VP.getWidth()/3, VP.getHeight()/2, 50, GFX.createSprite("ui", 0, 50, 100, 100), GFX.createSprite("ui", 100, 50, 50, 50));
+            // this.attBtn = UI.addButton("a", VP.getWidth() - 120, VP.getHeight() - 120, 50, 50, GFX.createSprite("ui", 0, 0, 50, 50), GFX.createSprite("ui", 50, 0, 50, 50));
+            // this.joy = UI.addJoystick("j", 0, VP.getHeight()/2, VP.getWidth()/3, VP.getHeight()/2, 50, GFX.createSprite("ui", 0, 50, 100, 100), GFX.createSprite("ui", 100, 50, 50, 50));
         },
         update(){
             this.shotCd -= Time.getElapsed();
             this.move();
         },
         move(){
-            this.moving = false;
-            if(this.joy.active){
-                this.moving = true;
-                Vec.add(this.pos, Vec.multiplyN(UI.getJoystickInput("j"), this.moveSpeed * Time.deltaSeconds()));
-                if(Vec.dot(Vec.v2(1, 0), this.joy.getInput()) > 0){
-                    let cp = Vec.cross(this.joy.getInput(), Vec.v2(1, 0));
-                    if(cp >= -1 && cp < -0.5)
-                        this.dir = "d";
-                    else if(cp >= -0.5 && cp < 0.5)
-                        this.dir = "r";
-                    else
-                        this.dir = "u";
-                }else{
-                    let cp = Vec.cross(this.joy.getInput(), Vec.v2(1, 0));
-                    if(cp >= -1 && cp < -0.5)
-                        this.dir = "d";
-                    else if(cp >= -0.5 && cp < 0.5)
-                        this.dir = "l";
-                    else
-                        this.dir = "u";
-                }
-            }
+            // this.moving = false;
+            // if(this.joy.active){
+            //     this.moving = true;
+            //     Vec.add(this.pos, Vec.multiplyN(UI.getJoystickInput("j"), this.moveSpeed * Time.deltaSeconds()));
+            //     if(Vec.dot(Vec.v2(1, 0), this.joy.getInput()) > 0){
+            //         let cp = Vec.cross(this.joy.getInput(), Vec.v2(1, 0));
+            //         if(cp >= -1 && cp < -0.5)
+            //             this.dir = "d";
+            //         else if(cp >= -0.5 && cp < 0.5)
+            //             this.dir = "r";
+            //         else
+            //             this.dir = "u";
+            //     }else{
+            //         let cp = Vec.cross(this.joy.getInput(), Vec.v2(1, 0));
+            //         if(cp >= -1 && cp < -0.5)
+            //             this.dir = "d";
+            //         else if(cp >= -0.5 && cp < 0.5)
+            //             this.dir = "l";
+            //         else
+            //             this.dir = "u";
+            //     }
+            // }
 
-            if(this.attBtn.getDown()){
-                this.shooting = true;
-                this.shot();
-            }else{
-                this.shooting = false; 
-            }
+            // if(this.attBtn.getDown()){
+            //     this.shooting = true;
+            //     this.shot();
+            // }else{
+            //     this.shooting = false; 
+            // }
             
             // console.log(d1>0);
             //     if(Input.keyDown(65)){
