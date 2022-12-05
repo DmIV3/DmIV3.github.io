@@ -17,7 +17,7 @@ Entities["Player"] = {
             this.dir = "b";
             VP.setCameraTarget(this);
 
-            this.attBtn = UI.addButton("a", VP.getWidth() - 70, VP.getHeight() - 70, 50, 50, GFX.createSprite("ui", 0, 0, 50, 50), GFX.createSprite("ui", 50, 0, 50, 50));
+            this.attBtn = UI.addButton("a", VP.getWidth() - 120, VP.getHeight() - 120, 50, 50, GFX.createSprite("ui", 0, 0, 50, 50), GFX.createSprite("ui", 50, 0, 50, 50));
             this.joy = UI.addJoystick("j", 0, VP.getHeight()/2, VP.getWidth()/3, VP.getHeight()/2, 50, GFX.createSprite("ui", 0, 50, 100, 100), GFX.createSprite("ui", 100, 50, 50, 50));
         },
         update(){
