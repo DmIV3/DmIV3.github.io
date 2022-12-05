@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title style="color: red">DMIV</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: green;
+        }
+        #main-canvas{
+            position: fixed;
+            display: block;
+            image-rendering: pixelated;
+            width: 100vw;
+            height: 100vh;
+            background: rgb(0, 8, 77);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="main-canvas"></canvas>
+    <script>let Entities = {};</script>
+    <script src="js/maths/vec.js"></script>
+    <script src="js/maths/umath.js"></script>
+    <script src="js/maths/astar.js"></script>
+    <script src="js/utils/time.js"></script>
+    <script src="js/render/viewport.js"></script>
+    <script src="js/utils/input.js"></script>
+    <script src="js/managers/imagemanager.js"></script>
+    <script src="js/managers/gamemanager.js"></script>
+    <script src="js/maths/collisionmath.js"></script>
+    <script src="js/maths/physics.js"></script>
+    <script src="js/managers/scenemanager.js"></script>
+    <script src="js/render/gfxcreator.js"></script>
+    <script src="js/render/graphics.js"></script>
+    <script src="js/render/ui.js"></script>
+    <script src="js/managers/audiomanager.js"></script>
+    <script src="js/managers/savemanager.js"></script>
+    <script src="js/render/renderer2d.js"></script>
+    <script src="resources/js/scenes.js"></script>
+    <script src="resources/js/settings.js"></script>
+    <script src="resources/js/sounds.js"></script>
+    <script src="resources/js/entities.js"></script>
+    <script src="resources/js/animations.js"></script>
+    <script src="resources/js/images.js"></script>
+    <script src="js/editors/sceneeditorui.js"></script>
+    <script src="js/editors/sceneeditorutills.js"></script>
+    <script src="js/editors/sceneeditor.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

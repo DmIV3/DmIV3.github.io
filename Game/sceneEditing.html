@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title style="color: red">DMIV</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: green;
+        }
+        #main-canvas{
+            position: fixed;
+            display: block;
+            image-rendering: pixelated;
+            width: 100vw;
+            height: 100vh;
+            background: rgb(0, 8, 77);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="main-canvas"></canvas>
+    <script>let Entities = {};</script>
+    <script src="js/maths/vec.js"></script>
+    <script src="js/maths/umath.js"></script>
+    <script src="js/maths/astar.js"></script>
+    <script src="js/utils/time.js"></script>
+    <script src="js/render/viewport.js"></script>
+    <script src="js/utils/input.js"></script>
+    <script src="js/managers/imagemanager.js"></script>
+    <script src="js/managers/gamemanager.js"></script>
+    <script src="js/maths/collisionmath.js"></script>
+    <script src="js/maths/physics.js"></script>
+    <script src="js/managers/scenemanager.js"></script>
+    <script src="js/render/gfxcreator.js"></script>
+    <script src="js/render/graphics.js"></script>
+    <script src="js/render/ui.js"></script>
+    <script src="js/managers/audiomanager.js"></script>
+    <script src="js/managers/savemanager.js"></script>
+    <script src="js/render/renderer2d.js"></script>
+    <script src="resources/js/scenes.js"></script>
+    <script src="resources/js/settings.js"></script>
+    <script src="resources/js/sounds.js"></script>
+    <script src="resources/js/entities.js"></script>
+    <script src="resources/js/animations.js"></script>
+    <script src="resources/js/images.js"></script>
+    <script src="js/editors/sceneeditorui.js"></script>
+    <script src="js/editors/sceneeditorutills.js"></script>
+    <script src="js/editors/sceneeditor.js"></script>
+    <script>
+window.onload = ()=>{
+
+function create(){
+	VP.setSurface(canvas);
+	VP.setCamera(new Camera2D(0, 0));
+	VP.resize();
+	Input.init(canvas);
+	renderer = new Renderer2D();
+	renderer.setImageSmoothing(false);
+
+	ImageManager.loadImages(IMAGES);
+	SFX.loadSounds(SOUNDS);
+	GFX.loadAnimations(ANIMATIONS);
+
+    GM.init();
+    GM.loadObjects();
+    SCM.loadScene("Main");
+
+	sceneEditor = Object.create(SceneEditor);
+	sceneEditor.create();
+}
+
+function update(){
+	UI.update();
+	GM.update();
+	SFX.update();
+	VP.update();
+
+	sceneEditor.update();
+}
+
+function render(){
+	GM.render(renderer);
+	UI.render(renderer);
+
+	sceneEditor.render(renderer);
+}
+let sceneEditor;
+let canvas = document.getElementById("main-canvas");
+let renderer;
+let fpsInfo = 0;
+
+
+
+window.addEventListener("blur", ()=> {GM.pause(); Input.clearKeyInput();}, false);
+window.addEventListener("focus", ()=> {GM.unpause();}, false);
+
+function loop(timestamp){
+	fpsInfo += Time.getElapsed();
+	if(fpsInfo >= 100){
+		fpsInfo -= 100;
+		document.title = `DMIV  ${~~Time.getFPS()}`;
+	}
+
+
+	Time.update(timestamp);
+	renderer.clear();
+
+	update();
+	render();
+
+	renderer.render();
+	Input.update();
+	requestAnimationFrame(loop);
+}
+create();
+loop(0);
+
+}
+    </script>
+</body>
+</html>
