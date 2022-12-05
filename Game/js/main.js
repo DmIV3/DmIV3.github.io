@@ -32,7 +32,7 @@ let renderer;
 let fpsInfo = 0;
 let fpsSpan = document.createElement("span");
 fpsSpan.style.position = "fixed";
-fpsSpan.style.top = "50px";
+fpsSpan.style.top = "150px";
 fpsSpan.style.left = "20px";
 fpsSpan.style.color = "white";
 document.body.appendChild(fpsSpan);
