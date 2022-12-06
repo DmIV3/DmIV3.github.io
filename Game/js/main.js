@@ -29,26 +29,12 @@ function render(){
 }
 let canvas = document.getElementById("main-canvas");
 let renderer;
-let fpsInfo = 0;
-let fpsSpan = document.createElement("span");
-fpsSpan.style.position = "fixed";
-fpsSpan.style.top = "50px";
-fpsSpan.style.left = "20px";
-fpsSpan.style.color = "white";
-document.body.appendChild(fpsSpan);
-
 
 window.addEventListener("blur", ()=> {GM.pause(); Input.clearKeyInput();}, false);
 window.addEventListener("focus", ()=> {GM.unpause();}, false);
 
 function loop(timestamp){
-	fpsInfo += Time.getElapsed();
-	if(fpsInfo >= 100){
-		fpsInfo -= 100;
-		fpsSpan.innerText = `DMIV  ${~~Time.getFPS()}`;
-	}
-
-
+	
 	Time.update(timestamp);
 	renderer.clear();
 
