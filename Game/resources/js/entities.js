@@ -201,6 +201,7 @@ Entities["Player"] = {
             r.setFontSize(18);
             r.setTextAlign("left");
             this.drawLine(r, this.fps);
+            this.drawLine(r, Input.touch(0).current.x + "  " + Input.touch(0).current.y);
         },
         drawLine(renderer, text){
             renderer.fillText(text, 20, 50 +  (this.line++ * 20));
