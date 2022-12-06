@@ -16,87 +16,21 @@ Entities["Player"] = {
             this.shooting = false;
             this.dir = "b";
             VP.setCameraTarget(this);
-
-            // this.attBtn = UI.addButton("a", VP.getWidth() - 120, VP.getHeight() - 120, 50, 50, GFX.createSprite("ui", 0, 0, 50, 50), GFX.createSprite("ui", 50, 0, 50, 50));
-            // this.joy = UI.addJoystick("j", 0, VP.getHeight()/2, VP.getWidth()/3, VP.getHeight()/2, 50, GFX.createSprite("ui", 0, 50, 100, 100), GFX.createSprite("ui", 100, 50, 50, 50));
+            this.controller = GM.add("controller", 0, 0, {owner:this, type:0});
         },
         update(){
             this.shotCd -= Time.getElapsed();
             this.move();
         },
         move(){
-            // this.moving = false;
-            // if(this.joy.active){
-            //     this.moving = true;
-            //     Vec.add(this.pos, Vec.multiplyN(UI.getJoystickInput("j"), this.moveSpeed * Time.deltaSeconds()));
-            //     if(Vec.dot(Vec.v2(1, 0), this.joy.getInput()) > 0){
-            //         let cp = Vec.cross(this.joy.getInput(), Vec.v2(1, 0));
-            //         if(cp >= -1 && cp < -0.5)
-            //             this.dir = "d";
-            //         else if(cp >= -0.5 && cp < 0.5)
-            //             this.dir = "r";
-            //         else
-            //             this.dir = "u";
-            //     }else{
-            //         let cp = Vec.cross(this.joy.getInput(), Vec.v2(1, 0));
-            //         if(cp >= -1 && cp < -0.5)
-            //             this.dir = "d";
-            //         else if(cp >= -0.5 && cp < 0.5)
-            //             this.dir = "l";
-            //         else
-            //             this.dir = "u";
-            //     }
-            // }
-
-            // if(this.attBtn.getDown()){
-            //     this.shooting = true;
-            //     this.shot();
-            // }else{
-            //     this.shooting = false; 
-            // }
-            
-            // console.log(d1>0);
-            //     if(Input.keyDown(65)){
-            //         this.pos.x -= this.moveSpeed * Time.deltaSeconds();
-            //         this.dir = "l";
-            //         this.moving = true;
-            //     }
-            //     if(Input.keyDown(68)){
-            //         this.pos.x += this.moveSpeed * Time.deltaSeconds();
-            //         this.dir = "r";
-            //         this.moving = true;
-            //     }
-            //     if(Input.keyDown(87)){
-            //         this.pos.y -= this.moveSpeed * Time.deltaSeconds();
-            //         this.dir = "u";
-            //         this.setZ();
-            //         this.moving = true;
-            //     }
-            //     if(Input.keyDown(83)){
-            //         this.pos.y += this.moveSpeed * Time.deltaSeconds();
-            //         this.dir = "d";
-            //         this.setZ();                    
-            //         this.moving = true;
-            //     }
-
-            
-
-            // if(Input.mouseDown(0)){
-            //     this.shooting = true;
-            //     this.shot();
-            // }else{
-            //     this.shooting = false; 
-            // }
-
+            this.controller.action();
             if(!this.shooting)
                 this.graphics.setCurrentAnimation("mage_walk_"+this.dir);
             
-
             if(!this.moving && !this.shooting)
                 this.graphics.pause();
             else
                 this.graphics.play();
-                
         },
         shot(){
             if(this.shotCd <= 0){
@@ -157,6 +91,121 @@ Entities["Player"] = {
                 GM.remove(this);
         }
     },
+    controller: {
+        init(x, y){
+            this.pos = Vec.v2(x, y);
+            this.size = Vec.v2(20, 20);
+            this.angle = 0;
+            this.z = 10;
+            this.physics = undefined;
+            this.graphics = undefined;
+        },
+        create(args){
+            this.owner = args.owner;
+            
+            if(args.type == 0){
+                this.attBtn = UI.addButton("a", VP.getWidth() - 120, VP.getHeight() - 120, 50, 50, GFX.createSprite("ui", 0, 0, 50, 50), GFX.createSprite("ui", 50, 0, 50, 50));
+                this.joy = UI.addJoystick("j", 0, VP.getHeight()/2, VP.getWidth()/3, VP.getHeight()/2, 50, GFX.createSprite("ui", 0, 50, 100, 100), GFX.createSprite("ui", 100, 50, 50, 50));
+                this.action = function(){
+                    this.owner.moving = false;
+                    if(this.joy.active){
+                        this.owner.moving = true;
+                        this.owner.setZ();
+                        Vec.add(this.owner.pos, Vec.multiplyN(this.joy.getInput(), this.owner.moveSpeed * Time.deltaSeconds()));
+                        if(Vec.dot(Vec.v2(1, 0), this.joy.getInput()) > 0){
+                            let cp = Vec.cross(this.joy.getInput(), Vec.v2(1, 0));
+                            if(cp >= -1 && cp < -0.5)
+                                this.owner.dir = "d";
+                            else if(cp >= -0.5 && cp < 0.5)
+                                this.owner.dir = "r";
+                            else
+                                this.owner.dir = "u";
+                        }else{
+                            let cp = Vec.cross(this.joy.getInput(), Vec.v2(1, 0));
+                            if(cp >= -1 && cp < -0.5)
+                                this.owner.dir = "d";
+                            else if(cp >= -0.5 && cp < 0.5)
+                                this.owner.dir = "l";
+                            else
+                                this.owner.dir = "u";
+                        }
+                    }
+                    if(this.attBtn.getDown()){
+                        this.owner.shooting = true;
+                        this.owner.shot();
+                    }else{
+                        this.owner.shooting = false; 
+                    }
+                }
+            }else{
+                this.action = function(){
+                    if(Input.keyDown(65)){
+                        this.owner.pos.x -= this.owner.moveSpeed * Time.deltaSeconds();
+                        this.owner.dir = "l";
+                        this.owner.moving = true;
+                    }
+                    if(Input.keyDown(68)){
+                        this.owner.pos.x += this.owner.moveSpeed * Time.deltaSeconds();
+                        this.owner.dir = "r";
+                        this.owner.moving = true;
+                    }
+                    if(Input.keyDown(87)){
+                        this.owner.pos.y -= this.owner.moveSpeed * Time.deltaSeconds();
+                        this.owner.dir = "u";
+                        this.owner.setZ();
+                        this.owner.moving = true;
+                    }
+                    if(Input.keyDown(83)){
+                        this.owner.pos.y += this.owner.moveSpeed * Time.deltaSeconds();
+                        this.owner.dir = "d";
+                        this.owner.setZ();                    
+                        this.owner.moving = true;
+                    }
+
+            
+
+                    if(Input.mouseDown(0)){
+                        this.owner.shooting = true;
+                        this.owner.shot();
+                    }else{
+                        this.owner.shooting = false; 
+                    }
+                }
+            }
+            
+        },
+        update(){
+
+        }
+    },
+    debug:{
+        init(x, y){
+            this.pos = Vec.v2(x, y);
+            this.size = Vec.v2(20, 20);
+            this.angle = 0;
+            this.z = 999;
+            this.physics = undefined;
+            this.graphics = undefined;
+        },
+        create(){
+            this.timePassed = 0;
+            this.fps = 0;
+            this.line = 1;
+        },
+        update(){
+            this.fps = Time.getFPS().toFixed(2);
+        },
+        render(r){
+            this.line = 1;
+            r.setColor("white");
+            r.setFontSize(18);
+            r.setTextAlign("left");
+            this.drawLine(r, this.fps);
+        },
+        drawLine(renderer, text){
+            renderer.fillText(text, 20, 50 +  (this.line++ * 20));
+        }
+    }
 }
 Entities["Brick Walls"] = {
     brick: {
@@ -2234,7 +2283,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
             this.angle = 0;
-            this.z = 10;
+            this.z = 20;
             this.physics = PHYS.createCircle(this, this.size.x / 2, [], 1);
             this.graphics = GFX.createSprite("decorations", 0, 200, 50, 50);
         },
@@ -2257,7 +2306,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
             this.angle = 0;
-            this.z = 5;
+            this.z = 20;;
             this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 50, 200, 50, 50);
         },
@@ -2273,7 +2322,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
             this.angle = 0;
-            this.z = 10;
+            this.z = 20;
             this.physics = PHYS.createBox(this, this.size, [], 1);
             this.graphics = GFX.createSprite("decorations", 100, 200, 50, 50);
         },
@@ -2296,7 +2345,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
             this.angle = 0;
-            this.z = 5;
+            this.z = 20;;
             this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 150, 200, 50, 50);
         },
@@ -2312,7 +2361,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
             this.angle = 0;
-            this.z = 10;
+            this.z = 20;
             this.physics = PHYS.createBox(this, this.size, [], 1);
             this.graphics = GFX.createSprite("decorations", 0, 250, 25, 25);
         },
@@ -2335,7 +2384,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
             this.angle = 0;
-            this.z = 5;
+            this.z = 20;;
             this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 25, 250, 25, 25);
         },
@@ -2351,7 +2400,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
             this.angle = 0;
-            this.z = 10;
+            this.z = 20;
             this.physics = PHYS.createBox(this, this.size, [], 1);
             this.graphics = GFX.createSprite("decorations", 0, 275, 25, 25);
         },
@@ -2374,7 +2423,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
             this.angle = 0;
-            this.z = 5;
+            this.z = 20;;
             this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 25, 275, 25, 25);
         },
