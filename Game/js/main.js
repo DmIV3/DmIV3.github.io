@@ -37,9 +37,12 @@ function loop(timestamp){
 	
 	Time.update(timestamp);
 	renderer.clear();
-
+	let start = new Date().getTime();
 	update();
+	GM.t1 = new Date().getTime() - start;
+	start = new Date().getTime();
 	render();
+	GM.t2 = new Date().getTime() - start;
 
 	renderer.render();
 	Input.update();
