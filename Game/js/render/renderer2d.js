@@ -170,9 +170,9 @@ class Renderer2D{
     }
 
     drawEntity(entity){
-        let g = entity.graphics.getSprite();
-        if(g == undefined)
+        if(!CollisionDetection.rectRect(entity.pos.x - entity.size.x / 2, entity.pos.y - entity.size.y / 2, entity.size.x, entity.size.y, VP.getCamera().pos.x, VP.getCamera().pos.y, VP.getWidth(), VP.getHeight()))
             return;
+        let g = entity.graphics.getSprite();
         this.drawRotatedCroppedImage(g.image, g.x, g.y, g.w, g.h, Math.floor(VP.screenX(entity.pos.x - entity.size.x / 2)), Math.floor(VP.screenY(entity.pos.y - entity.size.y / 2)), entity.size.x, entity.size.y, entity.angle);
     }
 }

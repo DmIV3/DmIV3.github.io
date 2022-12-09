@@ -70,7 +70,7 @@ Entities["Player"] = {
             else
                 Vec.setAngle(this.dir, 0);
             this.lifeTime  = 500;
-            this.moveSpeed = 1000;
+            this.moveSpeed = 1200;
         },
         update(){
             this.live();
@@ -78,7 +78,7 @@ Entities["Player"] = {
         },
         render(r){
             r.setColor("red");
-            r.fillCircle(VP.screenX(this.pos.x), VP.screenY(this.pos.y), 5);
+            r.fillCircle(VP.screenX(this.pos.x), VP.screenY(this.pos.y), 10);
         },
         move(){
             Vec.add(this.pos, Vec.multiplyN(this.dir, this.moveSpeed * Time.deltaSeconds()));
@@ -87,8 +87,9 @@ Entities["Player"] = {
             this.lifeTime -= Time.getElapsed();
             if(this.lifeTime <=0)
                 GM.remove(this);
-            if(this.physics.hasCollision())
+            if(this.physics.hasCollision()){
                 GM.remove(this);
+            }
         }
     },
     controller: {
@@ -139,6 +140,7 @@ Entities["Player"] = {
                 }
             }else{
                 this.action = function(){
+                    this.owner.moving = false;
                     if(Input.keyDown(65)){
                         this.owner.pos.x -= this.owner.moveSpeed * Time.deltaSeconds();
                         this.owner.dir = "l";
@@ -188,20 +190,35 @@ Entities["Player"] = {
             this.graphics = undefined;
         },
         create(){
-            this.timePassed = 0;
             this.fps = 0;
+            this.timer = 200;
             this.line = 1;
+
+            for (let i = 0; i < 10000; i++) {
+                GM.add("dirt", this.pos.x  -400, this.pos.y -400);
+                
+            }
         },
         update(){
-            this.fps = Time.getFPS().toFixed(2);
+            this.timer -= Time.getElapsed();
+            if(this.timer <= 0){
+                this.fps = Time.getFPS();
+                this.timer = 200;
+            }
+            if(Input.keyPressed(90)){
+                console.log(GM.bodiesToTest);
+            }
         },
         render(r){
             this.line = 1;
             r.setColor("white");
             r.setFontSize(18);
             r.setTextAlign("left");
-            this.drawLine(r, this.fps);
-            this.drawLine(r, Input.touch(0).current.x + "  " + Input.touch(0).current.y);
+            this.drawLine(r, this.fps.toFixed(2));
+            this.drawLine(r, Input.touch(0).current.x.toFixed(2) + " of " + VP.getWidth() + "  " + Input.touch(0).current.y.toFixed(2) + " of " + VP.getHeight());
+            this.drawLine(r, "upd time:  " + GM.t1);
+            this.drawLine(r, "ren time:  " + GM.t2);
+            this.drawLine(r, "phs time:  " + GM.t3);
         },
         drawLine(renderer, text){
             renderer.fillText(text, 20, 50 +  (this.line++ * 20));
@@ -2285,7 +2302,7 @@ Entities["Destructuble Env"] = {
             this.size = Vec.v2(50, 50);
             this.angle = 0;
             this.z = 20;
-            this.physics = PHYS.createCircle(this, this.size.x / 2, [], 1);
+            this.physics = PHYS.createCircle(this, 25, [], 1);
             this.graphics = GFX.createSprite("decorations", 0, 200, 50, 50);
         },
         create(){

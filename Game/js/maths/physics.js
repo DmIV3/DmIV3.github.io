@@ -154,7 +154,7 @@ class PHYS{
 		let dir = Vec.substractN(obj1.pos, obj2.pos);
 		let radii = obj1.radius + obj2.radius;
 
-		if(radii * radii < dir.x * dir.x + dir.y * dir.y)
+		if(radii * radii <= dir.x * dir.x + dir.y * dir.y)
 			return;
 		
 		obj1.collisionObjects.push(obj2.owner);
