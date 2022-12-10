@@ -194,10 +194,10 @@ Entities["Player"] = {
             this.timer = 200;
             this.line = 1;
 
-            for (let i = 0; i < 10000; i++) {
-                GM.add("dirt", this.pos.x  -400, this.pos.y -400);
+//             for (let i = 0; i < 10000; i++) {
+//                 GM.add("dirt", this.pos.x  -400, this.pos.y -400);
                 
-            }
+//             }
         },
         update(){
             this.timer -= Time.getElapsed();
