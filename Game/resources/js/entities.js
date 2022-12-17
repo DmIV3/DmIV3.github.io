@@ -230,6 +230,15 @@ Entities["Player"] = {
 
             r.fillCircle(200, 400, 4);
             r.fillText("200, 400", 200, 420);
+
+            r.fillCircle(0, 0, 4);
+            r.fillText("      0, 0", 0, 20);
+
+            r.fillCircle(0, 100, 4);
+            r.fillText("0, 100", 0, 120);
+
+            r.fillCircle(0, 400, 4);
+            r.fillText("0, 400", 0, 420);
         },
         drawLine(renderer, text){
             renderer.setTextAlign("left");
