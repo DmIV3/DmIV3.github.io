@@ -8,6 +8,7 @@ Entities["Player"] = {
             this.physics = PHYS.createBox(this, Vec.v2(25, 50), [COLLIDERS.PLAYER], 1);
             this.graphics = GFX.createAnimationPack("mage_walk_d", "mage_walk_u", "mage_walk_r", "mage_walk_l",
                                                      "mage_att_d", "mage_att_u", "mage_att_r", "mage_att_l");
+            this.controller = GM.add("controller", 0, 0, {owner:this, type:0});
         },
         create(){
             this.moveSpeed = 200;
@@ -16,7 +17,6 @@ Entities["Player"] = {
             this.shooting = false;
             this.dir = "b";
             VP.setCameraTarget(this);
-            this.controller = GM.add("controller", 0, 0, {owner:this, type:0});
         },
         update(){
             this.shotCd -= Time.getElapsed();
@@ -70,7 +70,7 @@ Entities["Player"] = {
             else
                 Vec.setAngle(this.dir, 0);
             this.lifeTime  = 500;
-            this.moveSpeed = 1200;
+            this.moveSpeed = 400;
         },
         update(){
             this.live();
@@ -194,10 +194,7 @@ Entities["Player"] = {
             this.timer = 200;
             this.line = 1;
 
-//             for (let i = 0; i < 10000; i++) {
-//                 GM.add("dirt", this.pos.x  -400, this.pos.y -400);
-                
-//             }
+            this.j = GM.findByName("player_mage").controller.joy;
         },
         update(){
             this.timer -= Time.getElapsed();
@@ -206,7 +203,7 @@ Entities["Player"] = {
                 this.timer = 200;
             }
             if(Input.keyPressed(90)){
-                console.log(GM.bodiesToTest);
+                console.log(this.j.current);
             }
         },
         render(r){
@@ -215,12 +212,27 @@ Entities["Player"] = {
             r.setFontSize(18);
             r.setTextAlign("left");
             this.drawLine(r, this.fps.toFixed(2));
-            this.drawLine(r, Input.touch(0).current.x.toFixed(2) + " of " + VP.getWidth() + "  " + Input.touch(0).current.y.toFixed(2) + " of " + VP.getHeight());
+            this.drawLine(r, this.j.current.x.toFixed(2) + " of " + VP.getWidth() + "  " + this.j.current.y.toFixed(2) + " of " + VP.getHeight());
             this.drawLine(r, "upd time:  " + GM.t1);
             this.drawLine(r, "ren time:  " + GM.t2);
             this.drawLine(r, "phs time:  " + GM.t3);
+
+            r.setColor("orange");
+            r.setTextAlign("center");
+            r.fillCircle(100, 100, 4);
+            r.fillText("100, 100", 100, 120);
+
+            r.fillCircle(200, 100, 4);
+            r.fillText("200, 100", 200, 120);
+
+            r.fillCircle(100, 400, 4);
+            r.fillText("100, 400", 100, 420);
+
+            r.fillCircle(200, 400, 4);
+            r.fillText("200, 400", 200, 420);
         },
         drawLine(renderer, text){
+            renderer.setTextAlign("left");
             renderer.fillText(text, 20, 50 +  (this.line++ * 20));
         }
     }
@@ -2324,7 +2336,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
             this.angle = 0;
-            this.z = 20;;
+            this.z = 15;;
             this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 50, 200, 50, 50);
         },
@@ -2363,7 +2375,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
             this.angle = 0;
-            this.z = 20;;
+            this.z = 15;;
             this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 150, 200, 50, 50);
         },
@@ -2402,7 +2414,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
             this.angle = 0;
-            this.z = 20;;
+            this.z = 15;;
             this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 25, 250, 25, 25);
         },
@@ -2441,7 +2453,7 @@ Entities["Destructuble Env"] = {
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
             this.angle = 0;
-            this.z = 20;;
+            this.z = 15;;
             this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 25, 275, 25, 25);
         },
