@@ -241,11 +241,11 @@ Entities["Player"] = {
             r.fillCircle(0, 400, 4);
             r.fillText("0, 400", 0, 420);
 
-            r.fillCircle(VP.getWidth(), 0, 10);
-            r.fillCircle(VP.getWidth(), 100, 10);
-            r.fillCircle(VP.getWidth(), 400, 10);
-            r.fillCircle(VP.getWidth(), VP.getHeight(), 10);
-            r.fillCircle(0, VP.getHeight(), 10);
+            r.fillCircle(window.innerWidth, 0, 10);
+            r.fillCircle(window.innerWidth, 100, 10);
+            r.fillCircle(window.innerWidth, 400, 10);
+            r.fillCircle(window.innerWidth, window.innerHeight, 10);
+            r.fillCircle(0, window.innerHeight, 10);
         },
         drawLine(renderer, text){
             renderer.setTextAlign("left");
