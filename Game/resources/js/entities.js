@@ -212,7 +212,8 @@ Entities["Player"] = {
             r.setFontSize(18);
             r.setTextAlign("left");
             this.drawLine(r, this.fps.toFixed(2));
-            this.drawLine(r, this.j.current.x.toFixed(2) + " of " + VP.getWidth() + "  " + this.j.current.y.toFixed(2) + " of " + VP.getHeight());
+            this.drawLine(r, Input.touch(0).current.x.toFixed(2) + " of " + VP.getWidth() + "  " + Input.touch(0).current.y.toFixed(2) + " of " + VP.getHeight());
+            // this.drawLine(r, this.j.current.x.toFixed(2) + " of " + VP.getWidth() + "  " + this.j.current.y.toFixed(2) + " of " + VP.getHeight());
             this.drawLine(r, "upd time:  " + GM.t1);
             this.drawLine(r, "ren time:  " + GM.t2);
             this.drawLine(r, "phs time:  " + GM.t3);
