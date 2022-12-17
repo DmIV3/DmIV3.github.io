@@ -95,7 +95,6 @@ class VP{
     static width = 0;
     static height = 0;
     static surface;
-    static buffer;
     static camera;
 
     static update(){
@@ -112,17 +111,10 @@ class VP{
 
     static setSurface(canvas){
         this.surface = canvas;
-        this.buffer = document.createElement("canvas");
-        this.buffer.width = this.width;
-        this.buffer.height = this.height;
     }
 
     static getSurface(){
         return this.surface;
-    }
-
-    static getBuffer(){
-        return this.buffer;
     }
 
     static setCamera(camera){
@@ -162,7 +154,7 @@ class VP{
     }
 
     static resize(){
-        this.width = this.surface.width = this.buffer.width = window.innerWidth;
-        this.height = this.surface.height  = this.buffer.height = window.innerHeight;
+        this.width = this.surface.width = window.innerWidth;
+        this.height = this.surface.height  = window.innerHeight;
     }
 }

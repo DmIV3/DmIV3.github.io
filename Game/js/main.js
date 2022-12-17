@@ -24,12 +24,11 @@ function update(){
 }
 
 function render(){
+	renderer.clear();
 	GM.render(renderer);
 	UI.render(renderer);
 }
 let canvas = document.getElementById("main-canvas");
-canvas.width = window.innerWidth;
-canvas.heignt = window.innerHeight;
 let renderer;
 
 window.addEventListener("blur", ()=> {GM.pause(); Input.clearKeyInput();}, false);
@@ -38,12 +37,10 @@ window.addEventListener("focus", ()=> {GM.unpause();}, false);
 function loop(timestamp){
 	
 	Time.update(timestamp);
-	renderer.clear();
 
 	update();
 	render();
 
-	renderer.render();
 	Input.update();
 	requestAnimationFrame(loop);
 }
