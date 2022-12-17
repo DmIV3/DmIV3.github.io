@@ -28,6 +28,8 @@ function render(){
 	UI.render(renderer);
 }
 let canvas = document.getElementById("main-canvas");
+canvas.width = window.innerWidth;
+canvas.heignt = window.innerHeight;
 let renderer;
 
 window.addEventListener("blur", ()=> {GM.pause(); Input.clearKeyInput();}, false);
