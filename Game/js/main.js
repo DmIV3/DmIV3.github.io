@@ -11,7 +11,6 @@ function create(){
 	SFX.loadSounds(SOUNDS);
 	GFX.loadAnimations(ANIMATIONS);
 
-	GM.init();
 	GM.loadObjects();
 	SCM.loadScene("Main");
 }

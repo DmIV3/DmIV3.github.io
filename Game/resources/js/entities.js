@@ -3,6 +3,7 @@ Entities["Player"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 20;
             this.physics = PHYS.createBox(this, Vec.v2(25, 50), [COLLIDERS.PLAYER], 1);
@@ -58,6 +59,7 @@ Entities["Player"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(20, 20);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = PHYS.createCircle(this, this.size.x/2, [COLLIDERS.PLAYER], 0);
@@ -88,6 +90,10 @@ Entities["Player"] = {
             if(this.lifeTime <=0)
                 GM.remove(this);
             if(this.physics.hasCollision()){
+                for(let i = 0; i < this.physics.getCollisions().length; i++){
+                    if(this.physics.getCollisions()[i].hp)
+                        this.physics.getCollisions()[i].hp--;
+                }
                 GM.remove(this);
             }
         }
@@ -96,6 +102,7 @@ Entities["Player"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(20, 20);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -184,6 +191,7 @@ Entities["Player"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(20, 20);
+            this.active = true;
             this.angle = 0;
             this.z = 999;
             this.physics = undefined;
@@ -203,7 +211,7 @@ Entities["Player"] = {
                 this.timer = 200;
             }
             if(Input.keyPressed(90)){
-                console.log(this.j.current);
+                console.log(GM.getObjects());
             }
         },
         render(r){
@@ -211,44 +219,16 @@ Entities["Player"] = {
             r.setColor("white");
             r.setFontSize(18);
             r.setTextAlign("left");
-            this.drawLine(r, this.fps.toFixed(2));
-            this.drawLine(r, VP.getHeight() + "    " +  VP.getSurface().height +  "   " + window.innerHeight);
-            // this.drawLine(r, Input.touch(0).current.x.toFixed(2) + " of " + VP.getWidth() + "  " + Input.touch(0).current.y.toFixed(2) + " of " + VP.getHeight());
-            // this.drawLine(r, this.j.current.x.toFixed(2) + " of " + VP.getWidth() + "  " + this.j.current.y.toFixed(2) + " of " + VP.getHeight());
-            this.drawLine(r, "upd time:  " + GM.t1);
-            this.drawLine(r, "ren time:  " + GM.t2);
-            this.drawLine(r, "phs time:  " + GM.t3);
+            this.printLine(r, this.fps.toFixed(2));
+            this.printLine(r, "upd time:  " + GM.t1);
+            this.printLine(r, "phs time:  " + GM.t2);
+            this.printLine(r, "gfx time:  " + GM.t3);
+            this.printLine(r, "ren time:  " + GM.t4);
+            this.printLine(r, "upd phys time:  " + GM.t5);
 
-            r.setColor("orange");
-            r.setTextAlign("center");
-            r.fillCircle(100, 100, 4);
-            r.fillText("100, 100", 100, 120);
-
-            r.fillCircle(200, 100, 4);
-            r.fillText("200, 100", 200, 120);
-
-            r.fillCircle(100, 400, 4);
-            r.fillText("100, 400", 100, 420);
-
-            r.fillCircle(200, 400, 4);
-            r.fillText("200, 400", 200, 420);
-
-            r.fillCircle(0, 0, 4);
-            r.fillText("      0, 0", 0, 20);
-
-            r.fillCircle(0, 100, 4);
-            r.fillText("0, 100", 0, 120);
-
-            r.fillCircle(0, 400, 4);
-            r.fillText("0, 400", 0, 420);
-
-            r.fillCircle(window.innerWidth, 0, 10);
-            r.fillCircle(window.innerWidth, 100, 10);
-            r.fillCircle(window.innerWidth, 400, 10);
-            r.fillCircle(window.innerWidth, window.innerHeight, 10);
-            r.fillCircle(0, window.innerHeight, 10);
+           
         },
-        drawLine(renderer, text){
+        printLine(renderer, text){
             renderer.setTextAlign("left");
             renderer.fillText(text, 20, 50 +  (this.line++ * 20));
         }
@@ -259,13 +239,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 0, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -275,13 +256,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 100, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -291,13 +273,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 0, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -307,13 +290,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 0, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -323,13 +307,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 0, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -339,13 +324,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 50, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -355,13 +341,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 100, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -371,13 +358,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 150, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -387,13 +375,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 50, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -403,13 +392,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 100, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -419,13 +409,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 150, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -435,13 +426,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 50, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -451,13 +443,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 150, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -467,13 +460,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 50, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -483,13 +477,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 100, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -499,13 +494,14 @@ Entities["Brick Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 150, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -517,13 +513,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 200, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -533,13 +530,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 300, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -549,13 +547,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 200, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -565,13 +564,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 200, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -581,13 +581,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 200, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -597,13 +598,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 250, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -613,13 +615,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 300, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -629,13 +632,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 350, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -645,13 +649,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 250, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -661,13 +666,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 300, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -677,13 +683,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 350, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -693,13 +700,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 250, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -709,13 +717,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 350, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -725,13 +734,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 250, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -741,13 +751,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 300, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -757,13 +768,14 @@ Entities["Rock Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 350, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -775,13 +787,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 400, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -791,13 +804,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 500, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -807,13 +821,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 400, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -823,13 +838,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 400, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -839,13 +855,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 400, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -855,13 +872,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 450, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -871,13 +889,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 500, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -887,13 +906,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 550, 0, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -903,13 +923,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 450, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -919,13 +940,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 500, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -935,13 +957,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 550, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -951,13 +974,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 450, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -967,13 +991,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 550, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -983,13 +1008,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 450, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -999,13 +1025,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 500, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -1015,13 +1042,14 @@ Entities["Steel Walls"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("tiles", 550, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -1033,6 +1061,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1049,6 +1078,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1065,6 +1095,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1081,6 +1112,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1097,6 +1129,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1113,6 +1146,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1129,6 +1163,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1145,6 +1180,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1161,6 +1197,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1177,6 +1214,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1193,6 +1231,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1209,6 +1248,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1225,6 +1265,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1241,6 +1282,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1257,6 +1299,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1273,6 +1316,7 @@ Entities["Roof Tiles"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -1291,6 +1335,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1307,6 +1352,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1323,6 +1369,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1339,6 +1386,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1355,6 +1403,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1371,6 +1420,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1387,6 +1437,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1403,6 +1454,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1419,6 +1471,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1435,6 +1488,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1451,6 +1505,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1467,6 +1522,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1483,6 +1539,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1499,6 +1556,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1515,6 +1573,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1531,6 +1590,7 @@ Entities["Flowers"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1549,6 +1609,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1565,6 +1626,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1581,6 +1643,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1597,6 +1660,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1613,6 +1677,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1629,6 +1694,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1645,6 +1711,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1661,6 +1728,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1677,6 +1745,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1693,6 +1762,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1709,6 +1779,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1725,6 +1796,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1741,6 +1813,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1757,6 +1830,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1773,6 +1847,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1789,6 +1864,7 @@ Entities["Stone Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1808,6 +1884,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1824,6 +1901,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1840,6 +1918,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1856,6 +1935,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1872,6 +1952,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1888,6 +1969,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1904,6 +1986,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1920,6 +2003,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1936,6 +2020,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1952,6 +2037,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1968,6 +2054,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -1984,6 +2071,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -2000,6 +2088,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -2016,6 +2105,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -2032,6 +2122,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -2048,6 +2139,7 @@ Entities["Dirt Roads"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
             this.physics = undefined;
@@ -2067,13 +2159,14 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 11;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 0, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -2083,13 +2176,14 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 11;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 50, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -2099,13 +2193,14 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 11;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 100, 50, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -2115,6 +2210,7 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -2131,6 +2227,7 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -2147,6 +2244,7 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 30;
             this.physics = undefined;
@@ -2163,6 +2261,7 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 20;
             this.physics = undefined;
@@ -2180,6 +2279,7 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 20;
             this.physics = undefined;
@@ -2197,6 +2297,7 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 20;
             this.physics = undefined;
@@ -2214,6 +2315,7 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 20;
             this.physics = undefined;
@@ -2231,13 +2333,14 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 0, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -2247,13 +2350,14 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 50, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -2263,13 +2367,14 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 100, 100, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -2279,13 +2384,14 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 0, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -2295,13 +2401,14 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 50, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -2311,13 +2418,14 @@ Entities["Nature"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 10;
-            this.physics = PHYS.createBox(this, this.size, [COLLIDERS.WALLS], 1);
+            this.physics = undefined;
             this.graphics = GFX.createSprite("decorations", 100, 150, 50, 50);
         },
         create(){
-            this.physics.setStatic();
+            
         },
         update(){
            
@@ -2329,6 +2437,7 @@ Entities["Destructuble Env"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 20;
             this.physics = PHYS.createCircle(this, 25, [], 1);
@@ -2339,19 +2448,18 @@ Entities["Destructuble Env"] = {
             this.hp = 3;
         },
         update(){
-            if(this.physics.hasCollisionWith("bullet")){
-                this.hp--;
-                if(this.hp <= 0){
-                    GM.remove(this);
-                    GM.add("barrel_broken", this.pos.x, this.pos.y);
-                }
+            if(this.hp <= 0){
+                GM.remove(this);
+                GM.add("barrel_broken", this.pos.x, this.pos.y);
             }
+
         }
     },
     barrel_broken: {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 15;;
             this.physics = undefined;
@@ -2368,6 +2476,7 @@ Entities["Destructuble Env"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 20;
             this.physics = PHYS.createBox(this, this.size, [], 1);
@@ -2391,6 +2500,7 @@ Entities["Destructuble Env"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(50, 50);
+            this.active = true;
             this.angle = 0;
             this.z = 15;;
             this.physics = undefined;
@@ -2407,6 +2517,7 @@ Entities["Destructuble Env"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
+            this.active = true;
             this.angle = 0;
             this.z = 20;
             this.physics = PHYS.createBox(this, this.size, [], 1);
@@ -2430,6 +2541,7 @@ Entities["Destructuble Env"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
+            this.active = true;
             this.angle = 0;
             this.z = 15;;
             this.physics = undefined;
@@ -2446,6 +2558,7 @@ Entities["Destructuble Env"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
+            this.active = true;
             this.angle = 0;
             this.z = 20;
             this.physics = PHYS.createBox(this, this.size, [], 1);
@@ -2469,6 +2582,7 @@ Entities["Destructuble Env"] = {
         init(x, y){
             this.pos = Vec.v2(x, y);
             this.size = Vec.v2(25, 25);
+            this.active = true;
             this.angle = 0;
             this.z = 15;;
             this.physics = undefined;

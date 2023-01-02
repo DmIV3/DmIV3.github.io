@@ -6,6 +6,15 @@ class SceneObjectsGrabber{
         this.startPos = Vec.zero();
         this.diffPos = Vec.zero();
         this.active = false;
+        this.editingInvWalls = {
+            active: false,
+            dragging: false,
+            start: Vec.zero(),
+            current: Vec.zero(),
+            startPos: Vec.zero(),
+            startSize: Vec.zero(),
+            corner: "lt"
+        };
         this.boxSelector = {
             active: false,
             finish: false,
@@ -18,6 +27,7 @@ class SceneObjectsGrabber{
     update(){
         this.grab();
         this.moveEntities();
+        this.editWall();
     }
 
     moveEntities(){
@@ -40,6 +50,11 @@ class SceneObjectsGrabber{
             if(this.editor.controlPanel.snap.active){
                 this.moveList[0].ref.pos.x = Math.floor(VP.worldX(Input.mouseX() + this.editor.controlPanel.snap.width / 2) / this.editor.controlPanel.snap.width) * this.editor.controlPanel.snap.width;
                 this.moveList[0].ref.pos.y = Math.floor(VP.worldY(Input.mouseY() + this.editor.controlPanel.snap.height / 2) / this.editor.controlPanel.snap.height) * this.editor.controlPanel.snap.height;
+                if(this.moveList[0].ref.name == "std_inv_wall"){
+                    this.moveList[0].ref.pos.x -= this.editor.controlPanel.snap.width / 2;
+                    this.moveList[0].ref.pos.y -= this.editor.controlPanel.snap.height / 2;
+                    
+                }
             }else{
                 this.moveList[0].ref.pos = Vec.substractN(this.moveList[0].start, this.diffPos);
                 this.moveList[0].ref.pos.x = Math.floor(this.moveList[0].ref.pos.x);
@@ -102,17 +117,25 @@ class SceneObjectsGrabber{
         if(!this.active)
             return;
         for (let i = 0; i < this.moveList.length; i++) {
-            let en = this.moveList[i].ref;
+            let e = this.moveList[i].ref;
             let pos = Vec.copy(this.moveList[i].start);
             pos.x = VP.screenX(pos.x);
             pos.y = VP.screenY(pos.y);
             r.setColor("rgba(255, 0, 0, 0.3)");
             let vertices = [];
-            vertices.push(Vec.transform(Vec.v2(-en.size.x / 2, -en.size.y / 2), pos.x, pos.y, en.angle));
-            vertices.push(Vec.transform(Vec.v2(en.size.x / 2, -en.size.y / 2), pos.x, pos.y, en.angle));
-            vertices.push(Vec.transform(Vec.v2(en.size.x / 2, en.size.y / 2), pos.x, pos.y, en.angle));
-            vertices.push(Vec.transform(Vec.v2(-en.size.x / 2, en.size.y / 2), pos.x, pos.y, en.angle));
-            r.fillPolygone(vertices);
+            if(e.name == "std_inv_wall"){
+                vertices.push(Vec.v2(pos.x, pos.y));       
+                vertices.push(Vec.v2(pos.x + e.size.x, pos.y));       
+                vertices.push(Vec.v2(pos.x + e.size.x, pos.y + e.size.y));       
+                vertices.push(Vec.v2(pos.x, pos.y + e.size.y));       
+                r.fillPolygone(vertices);
+            }else{
+                vertices.push(Vec.transform(Vec.v2(-e.size.x / 2, -e.size.y / 2), pos.x, pos.y, e.angle));
+                vertices.push(Vec.transform(Vec.v2(e.size.x / 2, -e.size.y / 2), pos.x, pos.y, e.angle));
+                vertices.push(Vec.transform(Vec.v2(e.size.x / 2, e.size.y / 2), pos.x, pos.y, e.angle));
+                vertices.push(Vec.transform(Vec.v2(-e.size.x / 2, e.size.y / 2), pos.x, pos.y, e.angle));
+                r.fillPolygone(vertices);
+            }
         }
     }
 
@@ -125,12 +148,35 @@ class SceneObjectsGrabber{
             r.setColor("orange");
             r.setLineWidth(1);
             let vertices = [];
-            vertices.push(Vec.transform(Vec.v2(-e.size.x / 2, -e.size.y / 2), pos.x, pos.y, e.angle));
-            vertices.push(Vec.transform(Vec.v2(e.size.x / 2, -e.size.y / 2), pos.x, pos.y, e.angle));
-            vertices.push(Vec.transform(Vec.v2(e.size.x / 2, e.size.y / 2), pos.x, pos.y, e.angle));
-            vertices.push(Vec.transform(Vec.v2(-e.size.x / 2, e.size.y / 2), pos.x, pos.y, e.angle));
+            if(e.name == "std_inv_wall"){
+                vertices.push(Vec.v2(pos.x, pos.y));       
+                vertices.push(Vec.v2(pos.x + e.size.x, pos.y));       
+                vertices.push(Vec.v2(pos.x + e.size.x, pos.y + e.size.y));       
+                vertices.push(Vec.v2(pos.x, pos.y + e.size.y));       
+                r.drawPolygone(vertices);
+                if(this.editingInvWalls.active){
+                    r.setColor("red");
+                    r.fillCircle(pos.x, pos.y, 10);
+                    r.setColor("green");
+                    r.fillCircle(pos.x + e.size.x, pos.y, 10);
+                    r.setColor("blue");
+                    r.fillCircle(pos.x + e.size.x, pos.y + e.size.y, 10);
+                    r.setColor("yellow");
+                    r.fillCircle(pos.x, pos.y + e.size.y, 10);
+                    r.setColor("orange");
+                    r.drawCircle(pos.x, pos.y, 10);
+                    r.drawCircle(pos.x + e.size.x, pos.y, 10);
+                    r.drawCircle(pos.x + e.size.x, pos.y + e.size.y, 10);
+                    r.drawCircle(pos.x, pos.y + e.size.y, 10);
+                }
+            }else{
+                vertices.push(Vec.transform(Vec.v2(-e.size.x / 2, -e.size.y / 2), pos.x, pos.y, e.angle));
+                vertices.push(Vec.transform(Vec.v2(e.size.x / 2, -e.size.y / 2), pos.x, pos.y, e.angle));
+                vertices.push(Vec.transform(Vec.v2(e.size.x / 2, e.size.y / 2), pos.x, pos.y, e.angle));
+                vertices.push(Vec.transform(Vec.v2(-e.size.x / 2, e.size.y / 2), pos.x, pos.y, e.angle));
+                r.drawPolygone(vertices);
+            }
 
-            r.drawPolygone(vertices);
         }
     }
 
@@ -210,7 +256,42 @@ class SceneObjectsGrabber{
 
         if(this.active)
             return;
-        
+
+        if(this.editor.controlPanel.wallEdit.active)
+            this.#grabInvWalls();
+        else
+            this.#grabEntity();
+    }
+
+    #grabInvWalls(){
+        let tempPicked = [];
+        if(Input.mousePressed(0) && !this.editingInvWalls.active){
+            this.editor.releaseEntities();
+
+            for (let i = 0; i < this.editor.invWalls.length; i++) {
+                const e = this.editor.invWalls[i];
+                if(CollisionDetection.pointRect(VP.worldX(Input.mouseX()), VP.worldY(Input.mouseY()), e.pos.x, e.pos.y, e.size.x, e.size.y))
+                    tempPicked.push(e);
+            }
+
+            if(tempPicked.length == 1)
+                this.pickedList.push(tempPicked[0]);
+            else if(tempPicked.length > 1)
+                this.pickedList.push(tempPicked[UMath.randomInt(0, tempPicked.length-1)]);
+            else
+                return;
+
+            this.editor.enanbleEntityFields();
+            this.editor.setEntityPanelFields(
+                this.pickedList[0].pos.x, 
+                this.pickedList[0].pos.y,
+                this.pickedList[0].size.x,
+                this.pickedList[0].size.y,
+                this.pickedList[0].angle);
+        }
+    }
+
+    #grabEntity(){
         let tempPicked = [];
 
         if(Input.keyPressed(66)){
@@ -303,15 +384,16 @@ class SceneObjectsGrabber{
             if(!Input.keyDown(16)){
                 this.editor.releaseEntities();
             }
-            
+
+            let mouseRect = [
+                Vec.v2(Input.mouseX() - 2, Input.mouseY() - 2),
+                Vec.v2(Input.mouseX() + 2, Input.mouseY() - 2),
+                Vec.v2(Input.mouseX() + 2, Input.mouseY() + 2),
+                Vec.v2(Input.mouseX() - 2, Input.mouseY() + 2)
+            ];
+
             for (let i = 0; i < this.editor.entities.length; i++) {
                 const e = this.editor.entities[i];
-                let mouseRect = [
-                    Vec.v2(Input.mouseX() - 2, Input.mouseY() - 2),
-                    Vec.v2(Input.mouseX() + 2, Input.mouseY() - 2),
-                    Vec.v2(Input.mouseX() + 2, Input.mouseY() + 2),
-                    Vec.v2(Input.mouseX() - 2, Input.mouseY() + 2)
-                ];
                 let pos = Vec.copy(e.pos);
                 pos.x = VP.screenX(pos.x);
                 pos.y = VP.screenY(pos.y);
@@ -347,5 +429,120 @@ class SceneObjectsGrabber{
                     this.pickedList[0].angle);
             }
         }
+    }
+
+    switchEditingWalls(){
+        if(this.pickedList.length != 0)
+            this.editingInvWalls.active = !this.editingInvWalls.active;
+    }
+
+    editWall(){
+        if(!this.editingInvWalls.active)
+            return;
+        
+        if(this.pickedList.length == 0)
+            return;
+        
+        let e = this.pickedList[0];
+        let lt = Vec.v2(e.pos.x, e.pos.y);
+        let rt = Vec.v2(e.pos.x + e.size.x, e.pos.y);
+        let rb = Vec.v2(e.pos.x + e.size.x, e.pos.y + e.size.y);
+        let lb = Vec.v2(e.pos.x, e.pos.y + e.size.y);
+
+        if(Input.mousePressed(0)){
+            this.editingInvWalls.startPos = Vec.copy(e.pos);
+            this.editingInvWalls.startSize = Vec.copy(e.size);
+
+            if(CollisionDetection.pointCircle(VP.worldX(Input.mouseX()), VP.worldY(Input.mouseY()), lt.x, lt.y, 10)){
+                this.editingInvWalls.dragging = true;
+                this.editingInvWalls.start = Vec.v2(Input.mouseX(), Input.mouseY());
+                this.editingInvWalls.corner = "lt";
+            }
+            if(CollisionDetection.pointCircle(VP.worldX(Input.mouseX()), VP.worldY(Input.mouseY()), rt.x, rt.y, 10)){
+                this.editingInvWalls.dragging = true;
+                this.editingInvWalls.start = Vec.v2(Input.mouseX(), Input.mouseY());
+                this.editingInvWalls.corner = "rt";
+            }
+            if(CollisionDetection.pointCircle(VP.worldX(Input.mouseX()), VP.worldY(Input.mouseY()), rb.x, rb.y, 10)){
+                this.editingInvWalls.dragging = true;
+                this.editingInvWalls.start = Vec.v2(Input.mouseX(), Input.mouseY());
+                this.editingInvWalls.corner = "rb";
+
+            }
+            if(CollisionDetection.pointCircle(VP.worldX(Input.mouseX()), VP.worldY(Input.mouseY()), lb.x, lb.y, 10)){
+                this.editingInvWalls.dragging = true;
+                this.editingInvWalls.start = Vec.v2(Input.mouseX(), Input.mouseY());
+                this.editingInvWalls.corner = "lb";
+            }
+        }
+
+        if(Input.mouseReleased(0))
+            this.editingInvWalls.dragging = false;
+        
+
+        if(this.editingInvWalls.dragging){
+            let snap = this.editor.controlPanel.snap;
+            if(snap.active){
+                let newPos = Vec.v2(
+                    Math.floor(VP.worldX(Input.mouseX() + snap.width) / snap.width) * snap.width - snap.width / 2,
+                    Math.floor(VP.worldY(Input.mouseY() + snap.height) / snap.height) * snap.height - snap.height / 2);
+                if(this.editingInvWalls.corner == "lt"){
+                    e.pos = newPos;
+                    e.size = Vec.addN(this.editingInvWalls.startSize, Vec.substractN(this.editingInvWalls.startPos, newPos));
+                }else if(this.editingInvWalls.corner == "rt"){
+                    e.pos.y = newPos.y;
+                    e.size.x = newPos.x - this.editingInvWalls.startPos.x;
+                    e.size.y = this.editingInvWalls.startSize.y + this.editingInvWalls.startPos.y - newPos.y;
+                }else if(this.editingInvWalls.corner == "rb"){
+                    e.size.x = newPos.x - this.editingInvWalls.startPos.x;
+                    e.size.y = newPos.y - this.editingInvWalls.startPos.y;
+                }
+                else if(this.editingInvWalls.corner == "lb"){
+                    e.pos.x = newPos.x;
+                    e.size.x = this.editingInvWalls.startSize.x + this.editingInvWalls.startPos.x - newPos.x;
+                    e.size.y = newPos.y - this.editingInvWalls.startPos.y;
+                }
+            }else{
+                this.editingInvWalls.current = Vec.v2(Input.mouseX(), Input.mouseY());
+                let diff = Vec.substractN(this.editingInvWalls.current, this.editingInvWalls.start);
+                if(this.editingInvWalls.corner == "lt"){
+                    e.pos.x = this.editingInvWalls.startPos.x + diff.x;
+                    e.pos.y = this.editingInvWalls.startPos.y + diff.y;
+                    e.size.x = this.editingInvWalls.startSize.x - diff.x;
+                    e.size.y = this.editingInvWalls.startSize.y - diff.y;
+                }else if(this.editingInvWalls.corner == "rt"){
+                    e.pos.y = this.editingInvWalls.startPos.y + diff.y;
+                    e.size.x = this.editingInvWalls.startSize.x + diff.x;
+                    e.size.y = this.editingInvWalls.startSize.y - diff.y;
+                }else if(this.editingInvWalls.corner == "rb"){
+                    e.size.x = this.editingInvWalls.startSize.x + diff.x;
+                    e.size.y = this.editingInvWalls.startSize.y + diff.y;
+                }
+                else if(this.editingInvWalls.corner == "lb"){
+                    e.pos.x = this.editingInvWalls.startPos.x + diff.x;
+                    e.size.x = this.editingInvWalls.startSize.x - diff.x;
+                    e.size.y = this.editingInvWalls.startSize.y + diff.y;
+                }
+            }
+
+            if(e.size.x < 10)
+                e.size.x = 10;
+            if(e.size.y < 10)
+                e.size.y = 10;
+
+            this.editor.setEntityPanelFields(
+                e.pos.x, 
+                e.pos.y,
+                e.size.x,
+                e.size.y,
+                e.angle);
+        }
+    }
+
+    reset(){
+        this.editingInvWalls.active = false;
+        this.editingInvWalls.dragging = false;
+        this.boxSelector.active = false;
+        this.pickedList = [];
     }
 }

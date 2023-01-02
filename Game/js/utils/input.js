@@ -235,11 +235,13 @@ class Input{
     }
         
     static #keyDown(e){
-        // e.preventDefault();
+        if(e.keyCode == 9)
+            e.preventDefault();
     	Input.keys[e.keyCode] = true;
     }
     static #keyUp(e){
-        // e.preventDefault();
+        if(e.keyCode == 9)
+            e.preventDefault();
     	Input.keys[e.keyCode] = false;
     }
 

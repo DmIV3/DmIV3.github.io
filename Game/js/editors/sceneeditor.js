@@ -6,6 +6,7 @@ let SceneEditor =
             this.typing = false;
 
             this.entities = [];
+            this.invWalls = [];
             this.dummies = {};
             this.pickedEntity = undefined;
             this.entityID = 0;
@@ -51,11 +52,19 @@ let SceneEditor =
                 return;
 
             this.renderGrid(renderer);
-            this.drawWorldOrigin(renderer);
+            
             
             this.entities.forEach(e => {
                 e.render(renderer);
             });
+
+            if(this.controlPanel.wallEdit.active || this.controlPanel.wallEdit.shown){
+                this.invWalls.forEach(e => {
+                    e.render(renderer);
+                });
+            }
+
+            this.drawWorldOrigin(renderer);
 
             if(this.pickedEntity != undefined){
                 this.pickedEntity.render(renderer);
@@ -127,15 +136,20 @@ let SceneEditor =
 
             if(Input.keyPressed(71)) //// g
                 this.grabber.run();
+
+            if(Input.keyPressed(69) && this.controlPanel.wallEdit.active) //// e
+                this.grabber.switchEditingWalls();
             
-            if(Input.keyPressed(9)) //// Tab
+            
+            if(Input.keyPressed(9)){ //// Tab
                 this.controlPanel.grid.click();
+            }
 
             if(Input.keyPressed(90)){ //// TEST Z!
                 
-                console.log(this.entities);
+                console.log(this.grabber);
             }
-                
+
         },
 
         loadObjects: function(){
@@ -154,8 +168,8 @@ let SceneEditor =
             this.recreateScene();
             this.entityID = 0;
             this.entities = [];
+            this.invWalls = [];
             this.currentScene = name;
-            
             for (let i = 0; i < SCENES.length; i++) {
                 const scene = SCENES[i];
                 if(scene.name == name){
@@ -167,7 +181,12 @@ let SceneEditor =
                         newEnt.size.x = e.size.x;
                         newEnt.size.y = e.size.y;
                         newEnt.angle = e.angle;
-                        this.entities.push(newEnt);
+                        if(newEnt.name == "std_inv_wall"){
+                            this.invWalls.push(newEnt);
+                        }
+                        else{
+                            this.entities.push(newEnt);
+                        }
                     }
                 }
             }
@@ -179,6 +198,9 @@ let SceneEditor =
             this.sceneEntitiesPanel.clear();
             for (let i = 0; i < this.entities.length; i++) {
                 this.sceneEntitiesPanel.add(this.entities[i]);
+            }
+            for (let i = 0; i < this.invWalls.length; i++) {
+                this.sceneEntitiesPanel.add(this.invWalls[i]);
             }
         },
 
@@ -251,6 +273,8 @@ let SceneEditor =
             SceneEditorUI.hideElement(this.controlPanel.gridWidthInputContainer);
             SceneEditorUI.hideElement(this.controlPanel.gridHeightInputContainer);
 
+            SceneEditorUI.hideElement(this.controlPanel.wallEditingContainer);
+
             this.controlPanel.container.style.height = "40px";
             SCM.loadScene(this.currentScene);
         },
@@ -271,7 +295,9 @@ let SceneEditor =
             SceneEditorUI.showElement(this.controlPanel.gridWidthInputContainer);
             SceneEditorUI.showElement(this.controlPanel.gridHeightInputContainer);
 
-            this.controlPanel.container.style.height = "80px";
+            SceneEditorUI.showElement(this.controlPanel.wallEditingContainer);
+
+            this.controlPanel.container.style.height = "120px";
             this.loadScene(this.currentScene);
         },
 
@@ -312,6 +338,23 @@ let SceneEditor =
                             }
                         );
                     }
+                    for (let j = 0; j < this.invWalls.length; j++) {
+                        const en = this.invWalls[j];
+                        scene.go.push(
+                            {
+                                name: en.name,
+                                pos: {
+                                    x: en.pos.x,
+                                    y: en.pos.y
+                                }, 
+                                size: {
+                                    x: en.size.x,
+                                    y: en.size.y
+                                },
+                                angle: en.angle
+                            }
+                        );
+                    }
                 }
             }
         },
@@ -319,8 +362,8 @@ let SceneEditor =
         pickEntity: function(name){
             if(this.dummies[name]  != undefined){
                 this.releaseEntities();
-                this.pickedEntity = this.cloneEntity(name, this.dummies[name], 0, 0);
-                this.pickedEntity.update = function(grid){
+                let newEntity = this.cloneEntity(name, this.dummies[name], 0, 0);
+                newEntity.update = function(grid){
                     if(!grid.active){
                         this.pos.x = VP.worldX(Input.mouseX());
                         this.pos.y = VP.worldY(Input.mouseY());
@@ -335,6 +378,24 @@ let SceneEditor =
                         }
                     }
                 };
+                if(name  == "std_inv_wall"){
+                    if(!this.controlPanel.wallEdit.active)
+                        this.controlPanel.wallEditChkbx.click();
+                        newEntity.update = function(grid){
+                            if(!grid.active){
+                                this.pos.x = VP.worldX(Input.mouseX());
+                                this.pos.y = VP.worldY(Input.mouseY());
+                            }else{
+                                this.pos.x = Math.floor(VP.worldX(Input.mouseX() + grid.width / 2) / grid.width) * grid.width - grid.width / 2;
+                                this.pos.y = Math.floor(VP.worldY(Input.mouseY() + grid.height / 2) / grid.height) * grid.height - grid.height / 2;
+                            }
+                            this.physics.updateVertices();
+                        }
+                }else{
+                    if(this.controlPanel.wallEdit.active)
+                        this.controlPanel.wallEditChkbx.click();
+                }
+                this.pickedEntity = newEntity;
             }else{
                 this.pickedEntity = undefined;  
             }
@@ -344,7 +405,11 @@ let SceneEditor =
             if(this.pickedEntity == undefined)
                 return;
             let newEntity = this.cloneEntity(this.pickedEntity.name, this.pickedEntity, Math.floor(this.pickedEntity.pos.x), Math.floor(this.pickedEntity.pos.y));
-            this.entities.push(newEntity);
+            if(newEntity.name == "std_inv_wall"){
+                this.invWalls.push(newEntity);
+            }else{
+                this.entities.push(newEntity);
+            }
             this.sortByZ();
             this.sceneEntitiesPanel.add(newEntity);
         },
@@ -353,37 +418,47 @@ let SceneEditor =
             let newEntity = Object.create(entity);
             newEntity.init(posX, posY);
             newEntity.name = name;
-            newEntity.render = function(renderer){
-                if(newEntity.graphics != undefined){
-                    let g = newEntity.graphics.getSprite();
-                    renderer.drawRotatedCroppedImage(g.image, g.x, g.y, g.w, g.h, VP.screenX(newEntity.pos.x - newEntity.size.x / 2), VP.screenY(newEntity.pos.y - newEntity.size.y / 2), newEntity.size.x, newEntity.size.y, newEntity.angle);
-                }else{
-                    renderer.setColor("green");
-                    renderer.drawCircle(VP.screenX(newEntity.pos.x), VP.screenY(newEntity.pos.y), 20);
-                    renderer.setColor("blue");
-                    renderer.setFontSize(16);
-                    renderer.setTextAlign("center");
-                    renderer.setTextBaseline("middle");
-                    renderer.fillText(newEntity.name, VP.screenX(newEntity.pos.x), VP.screenY(newEntity.pos.y));
+            if(name == "std_inv_wall"){
+                newEntity.render = function(r){
+                    r.setColor("rgba(255,255,255,0.3");
+                    r.fillRect(VP.screenX(this.pos.x), VP.screenY(this.pos.y), this.size.x, this.size.y);
+                    r.setColor("#ffffff");
+                    r.setLineWidth(1);
+                    r.drawRect(VP.screenX(this.pos.x), VP.screenY(this.pos.y), this.size.x, this.size.y);
                 }
-
-                
-                if(newEntity.physics != undefined){
-                    renderer.setColor("red");
-                    renderer.setLineWidth(1);
-                    if(newEntity.physics.type == 0){
-                        renderer.drawCircle(VP.screenX(newEntity.physics.pos.x), VP.screenY(newEntity.physics.pos.y), newEntity.physics.radius);
+            }else{
+                newEntity.render = function(renderer){
+                    if(newEntity.graphics != undefined){
+                        let g = newEntity.graphics.getSprite();
+                        renderer.drawRotatedCroppedImage(g.image, g.x, g.y, g.w, g.h, VP.screenX(newEntity.pos.x - newEntity.size.x / 2), VP.screenY(newEntity.pos.y - newEntity.size.y / 2), newEntity.size.x, newEntity.size.y, newEntity.angle);
                     }else{
-                        let verts = newEntity.physics.getVertices();
-                        for (let y = 0; y < verts.length; y++) {
-                            const p1 = UMath.arrayLoop(verts, y);
-                            const p2 = UMath.arrayLoop(verts, y+1);
-                            renderer.drawLine(VP.screenX(p1.x), VP.screenY(p1.y), VP.screenX(p2.x), VP.screenY(p2.y));
-                            
+                        renderer.setColor("green");
+                        renderer.drawCircle(VP.screenX(newEntity.pos.x), VP.screenY(newEntity.pos.y), 20);
+                        renderer.setColor("blue");
+                        renderer.setFontSize(16);
+                        renderer.setTextAlign("center");
+                        renderer.setTextBaseline("middle");
+                        renderer.fillText(newEntity.name, VP.screenX(newEntity.pos.x), VP.screenY(newEntity.pos.y));
+                    }
+    
+                    
+                    if(newEntity.physics != undefined){
+                        renderer.setColor("red");
+                        renderer.setLineWidth(1);
+                        if(newEntity.physics.type == 0){
+                            renderer.drawCircle(VP.screenX(newEntity.physics.pos.x), VP.screenY(newEntity.physics.pos.y), newEntity.physics.radius);
+                        }else{
+                            let verts = newEntity.physics.getVertices();
+                            for (let y = 0; y < verts.length; y++) {
+                                const p1 = UMath.arrayLoop(verts, y);
+                                const p2 = UMath.arrayLoop(verts, y+1);
+                                renderer.drawLine(VP.screenX(p1.x), VP.screenY(p1.y), VP.screenX(p2.x), VP.screenY(p2.y));
+                                
+                            }
                         }
                     }
+                    
                 }
-                
             }
             
             if(newEntity.physics){
@@ -421,7 +496,7 @@ let SceneEditor =
 
         releaseEntities: function(){
             this.pickedEntity = undefined;
-            this.grabber.pickedList = [];
+            this.grabber.reset();
             this.disableEntityFields();
         },
 
@@ -430,13 +505,23 @@ let SceneEditor =
                 return;
             for (let i = 0; i < this.grabber.pickedList.length; i++) {
                 const grabbedEn = this.grabber.pickedList[i];
-                for (let j = 0; j < this.entities.length; j++) {
-                    const sceneEn = this.entities[j];
-                    if(sceneEn == grabbedEn){
-                        this.sceneEntitiesPanel.remove(sceneEn.id);
-                        this.entities.splice(j, 1);
+                if(grabbedEn.name == "std_inv_wall"){
+                    for (let j = 0; j < this.invWalls.length; j++) {
+                        const sceneEn = this.invWalls[j];
+                        if(sceneEn == grabbedEn){
+                            this.sceneEntitiesPanel.remove(sceneEn.id);
+                            this.invWalls.splice(j, 1);
+                        }
                     }
-                }
+                }else{
+                    for (let j = 0; j < this.entities.length; j++) {
+                        const sceneEn = this.entities[j];
+                        if(sceneEn == grabbedEn){
+                            this.sceneEntitiesPanel.remove(sceneEn.id);
+                            this.entities.splice(j, 1);
+                        }
+                    }
+                } 
             }
             this.releaseEntities();
         },

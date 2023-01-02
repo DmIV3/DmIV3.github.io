@@ -14,7 +14,6 @@ SceneEditorUI = {
     },
     focusElement: function(el){
         el.focus();
-        el.select();
     },
     blurElement: function(el){
         el.blur();
@@ -74,7 +73,7 @@ SceneEditorUI = {
         this.styleContainer(result.container);
         result.container.style.top = "5px";
         result.container.style.left = "5px";
-        result.container.style.height = "80px";
+        result.container.style.height = "120px";
         document.body.appendChild(result.container);
         ///////////// HIDE/SHOW BUTTON ///////////////////////////////////////////
         result.hideShowBtn = document.createElement("button");
@@ -84,6 +83,7 @@ SceneEditorUI = {
         result.hideShowBtn.style.height = "30px";
         result.hideShowBtn.style.bottom = "-35px";
         result.hideShowBtn.style.left = "-3px";
+        result.hideShowBtn.tabIndex = -1;
         result.hideShowBtn.addEventListener("click", () => {
             this.blurElement(result.hideShowBtn);
             if(result.hidden){
@@ -94,7 +94,7 @@ SceneEditorUI = {
                 result.hidden = true;
                 result.hideShowBtn.innerText = "▼";
                 if(that.editing)
-                    result.container.style.top = "-80px";
+                    result.container.style.top = "-120px";
                 else
                     result.container.style.top = "-40px";
             }
@@ -114,6 +114,7 @@ SceneEditorUI = {
         result.loadSceneOption = document.createElement("select");
         result.loadSceneOption.style.width = "100px";
         result.loadSceneOption.style.height = "35px";
+        result.loadSceneOption.tabIndex = -1;
         for (let i = 0; i < SCENES.length; i++) {
             result.addScene(that, SCENES[i].name);
         }
@@ -128,6 +129,7 @@ SceneEditorUI = {
         result.newSceneBtn.innerText = "New Scene";
         result.newSceneBtn.style.height = "35px";
         result.newSceneBtn.style.padding = "0 5px";
+        result.newSceneBtn.tabIndex = -1;
         result.newSceneBtn.addEventListener("click", () => {
             that.typing = true;
             this.showElement(that.textInput.container);
@@ -139,6 +141,7 @@ SceneEditorUI = {
         result.delSceneBtn.innerText = "Delete";
         result.delSceneBtn.style.height = "35px";
         result.delSceneBtn.style.padding = "0 5px";
+        result.delSceneBtn.tabIndex = -1;
         result.delSceneBtn.addEventListener("click", () => {
             this.blurElement(result.delSceneBtn);
             if(confirm("Do you really want to remove \"" + that.currentScene + "\" scene?")){
@@ -155,6 +158,7 @@ SceneEditorUI = {
         result.playBtn.innerText = "Play";
         result.playBtn.style.height = "35px";
         result.playBtn.style.padding = "0 5px";
+        result.playBtn.tabIndex = -1;
         result.playBtn.addEventListener("click", () => {
             this.blurElement(result.playBtn);
             that.play();
@@ -166,6 +170,7 @@ SceneEditorUI = {
         result.editBtn.style.height = "35px";
         result.editBtn.style.display = "none";
         result.editBtn.style.padding = "0 5px";
+        result.editBtn.tabIndex = -1;
         result.editBtn.addEventListener("click", () => {
             this.blurElement(result.editBtn);
             that.edit();
@@ -176,6 +181,7 @@ SceneEditorUI = {
         result.saveBtn.innerText = "Save";
         result.saveBtn.style.height = "35px";
         result.saveBtn.style.padding = "0 5px";
+        result.saveBtn.tabIndex = -1;
         result.saveBtn.addEventListener("click", () => {
             this.blurElement(result.saveBtn);
             that.save();
@@ -200,8 +206,10 @@ SceneEditorUI = {
         result.grid.style.display = "inline-block";
         result.grid.style.height = "40px";
         result.grid.style.width = "20px";
+        result.grid.tabIndex = -1;
         result.grid.oninput = ()=>{
-            this.blurElement(result.grid)
+            SceneEditorUI.focusElement(result.grid);
+            SceneEditorUI.blurElement(result.grid);
             result.snap.active = result.grid.checked;
             if(result.gridWidth.value != "" && result.gridWidth.value != "0"){
                 result.snap.width = parseInt(result.gridWidth.value);
@@ -242,6 +250,7 @@ SceneEditorUI = {
         result.gridWidth.value = result.snap.width;
         result.gridWidth.style.display = "inline-block";
         result.gridWidth.style.width = "50px";
+        result.gridWidth.tabIndex = -1;
 
         let gridWidthLabel = document.createElement("label");
         gridWidthLabel.setAttribute("for", "gridWidth");
@@ -273,6 +282,7 @@ SceneEditorUI = {
         result.gridHeight.value = result.snap.height;
         result.gridHeight.style.display = "inline-block";
         result.gridHeight.style.width = "50px";
+        result.gridHeight.tabIndex = -1;
 
         let gridHeightLabel = document.createElement("label");
         gridHeightLabel.setAttribute("for", "gridHeight");
@@ -288,6 +298,65 @@ SceneEditorUI = {
         }
         result.gridHeightInputContainer.appendChild(result.gridHeight);
         result.gridHeightInputContainer.appendChild(gridHeightLabel);
+
+
+        //////////// INVISIBLE WALL EDITING CHECKBOX ///////////////////////////////
+        result.container.appendChild(document.createElement("br"));
+        result.wallEditingContainer = document.createElement("div");
+        result.wallEdit = {
+            active: false,
+            shown: false
+        }
+        result.container.appendChild(result.wallEditingContainer);
+        result.wallEditingContainer.style.display = "inline-block";
+        result.wallEditingContainer.style.height = "40px";
+        result.wallEditingContainer.style.marginRight = "10px";
+
+        result.wallEditChkbx = document.createElement("input");
+        result.wallEditChkbx.setAttribute("id", "wall-edit");
+        result.wallEditChkbx.setAttribute("type", "checkbox");
+        result.wallEditChkbx.style.display = "inline-block";
+        result.wallEditChkbx.style.height = "40px";
+        result.wallEditChkbx.style.width = "20px";
+        result.wallEditChkbx.tabIndex = -1;
+        result.wallEditChkbx.oninput = ()=>{
+            this.blurElement(result.wallEditChkbx);
+            result.wallEdit.active = result.wallEditChkbx.checked;
+            that.releaseEntities();
+        }
+        let wallEditLabel = document.createElement("label");
+        wallEditLabel.setAttribute("for", "wall-edit");
+        wallEditLabel.innerText = "Edit invisible walls";
+        wallEditLabel.style.display = "inline-block";
+        wallEditLabel.style.verticalAlign = "top";
+        wallEditLabel.style.height = "40px";
+        wallEditLabel.style.lineHeight = "40px";
+        wallEditLabel.style.color = "#ffffff";
+
+        result.wallShowChkbx = document.createElement("input");
+        result.wallShowChkbx.setAttribute("id", "wall-show");
+        result.wallShowChkbx.setAttribute("type", "checkbox");
+        result.wallShowChkbx.style.display = "inline-block";
+        result.wallShowChkbx.style.height = "40px";
+        result.wallShowChkbx.style.width = "20px";
+        result.wallShowChkbx.style.marginLeft = "20px";
+        result.wallShowChkbx.tabIndex = -1;
+        result.wallShowChkbx.oninput = ()=>{
+            this.blurElement(result.wallShowChkbx);
+            result.wallEdit.shown = result.wallShowChkbx.checked;
+        }
+        let wallShowLabel = document.createElement("label");
+        wallShowLabel.setAttribute("for", "wall-show");
+        wallShowLabel.innerText = "Show inv walls";
+        wallShowLabel.style.display = "inline-block";
+        wallShowLabel.style.verticalAlign = "top";
+        wallShowLabel.style.height = "40px";
+        wallShowLabel.style.lineHeight = "40px";
+        wallShowLabel.style.color = "#ffffff";
+        result.wallEditingContainer.appendChild(result.wallEditChkbx);
+        result.wallEditingContainer.appendChild(wallEditLabel);
+        result.wallEditingContainer.appendChild(result.wallShowChkbx);
+        result.wallEditingContainer.appendChild(wallShowLabel);
         
         return result;
     },
@@ -317,6 +386,7 @@ SceneEditorUI = {
         result.hideShowBtn.style.height = "30px";
         result.hideShowBtn.style.bottom = "-35px";
         result.hideShowBtn.style.left = "-3px";
+        result.hideShowBtn.tabIndex = -1;
         result.hideShowBtn.addEventListener("click", () => {
             this.blurElement(result.hideShowBtn);
             if(result.hidden){
@@ -359,6 +429,7 @@ SceneEditorUI = {
             label.setAttribute("data", 0);
             cont.appendChild(label);
             result.list.appendChild(cont);
+            
             label.onclick = ()=>{
                 if(label.getAttribute("data") == "1"){
                     label.setAttribute("data", 0);
@@ -378,6 +449,7 @@ SceneEditorUI = {
                 b.style.display = "block";
                 b.style.width = "100%";
                 b.style.minHeight = "20px";
+                b.tabIndex = -1;
 
                 b.addEventListener("click", (e) => {
                     if(that.typing)
@@ -415,6 +487,7 @@ SceneEditorUI = {
         result.hideShowBtn.style.height = "30px";
         result.hideShowBtn.style.bottom = "-35px";
         result.hideShowBtn.style.right = "-3px";
+        result.hideShowBtn.tabIndex = -1;
         result.hideShowBtn.addEventListener("click", () => {
             this.blurElement(result.hideShowBtn);
             if(result.hidden){
@@ -436,6 +509,7 @@ SceneEditorUI = {
             b.style.display = "block";
             b.style.width = "100%";
             b.style.minHeight = "20px";
+            b.tabIndex = -1;
             b.innerText = entity.name + " x: " + entity.pos.x + " y: " + entity.pos.y;
             b.setAttribute("data", entity.id);
             b.addEventListener("click", (e)=>{
@@ -449,8 +523,17 @@ SceneEditorUI = {
                         that.camTarget.pos.y = e.pos.y;
                         that.enanbleEntityFields();
                         that.setEntityPanelFields(e.pos.x, e.pos.y, e.size.x, e.size.y, e.angle);
-                    }
-                        
+                    }   
+                }
+                for (let i = 0; i < that.invWalls.length; i++) {
+                    const e = that.invWalls[i];
+                    if(e.id == id){
+                        that.grabber.pickedList.push(e);
+                        that.camTarget.pos.x = e.pos.x;
+                        that.camTarget.pos.y = e.pos.y;
+                        that.enanbleEntityFields();
+                        that.setEntityPanelFields(e.pos.x, e.pos.y, e.size.x, e.size.y, e.angle);
+                    }   
                 }
             }, false);
             result.list.appendChild(b);
@@ -502,6 +585,7 @@ SceneEditorUI = {
         result.xPos.setAttribute("type", "number");
         result.xPos.style.height = "20px";
         result.xPos.style.width = "60px";
+        result.xPos.tabIndex = -1;
         result.xPos.oninput = ()=>{
             result.setEntity({x: result.xPos.value});
         }
@@ -525,6 +609,7 @@ SceneEditorUI = {
         result.yPos.setAttribute("type", "number");
         result.yPos.style.height = "20px";
         result.yPos.style.width = "60px";
+        result.yPos.tabIndex = -1;
         result.yPos.oninput = ()=>{
             result.setEntity({y: result.yPos.value});
         }
@@ -548,6 +633,7 @@ SceneEditorUI = {
         result.width.setAttribute("type", "number");
         result.width.style.height = "20px";
         result.width.style.width = "60px";
+        result.width.tabIndex = -1;
         result.width.oninput = ()=>{
             result.setEntity({w: result.width.value});
         }
@@ -571,6 +657,7 @@ SceneEditorUI = {
         result.height.setAttribute("type", "number");
         result.height.style.height = "20px";
         result.height.style.width = "60px";
+        result.height.tabIndex = -1;
         result.height.oninput = ()=>{
             result.setEntity({h: result.height.value});
         }
@@ -594,6 +681,7 @@ SceneEditorUI = {
         result.angle.setAttribute("type", "number");
         result.angle.style.height = "20px";
         result.angle.style.width = "60px";
+        result.angle.tabIndex = -1;
         result.angle.oninput = ()=>{
             result.setEntity({angle: result.angle.value});
         }
