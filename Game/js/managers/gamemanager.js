@@ -121,10 +121,11 @@ class GM{
         newEntity.init(x, y);
         GM.requestCreate(newEntity, args);
         if(newEntity.render == undefined){
-            newEntity.render = function(renderer){
-                if(newEntity.graphics){
-                    let g = newEntity.graphics.getSprite();
-                    renderer.drawRotatedCroppedImage(g.image, g.x, g.y, g.w, g.h, VP.screenX(newEntity.pos.x - newEntity.size.x / 2), VP.screenY(newEntity.pos.y - newEntity.size.y / 2), newEntity.size.x, newEntity.size.y, newEntity.angle);
+            if(newEntity.graphics == undefined){
+                newEntity.render = function(renderer){}
+            }else{
+                newEntity.render = function(renderer){
+                    renderer.drawEntity(this);
                 }
             }
         }
