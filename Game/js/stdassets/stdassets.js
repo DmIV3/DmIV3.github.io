@@ -21,16 +21,7 @@ Entities["std"] = {
             this.physics.setStatic();
         },
         update(){},
-        render(r){
-            r.setColor("white");
-            let p1 = this.physics.vertices[0];
-            let p2 = this.physics.vertices[1];
-            let p3 = this.physics.vertices[2];
-            let p4 = this.physics.vertices[3];
-            r.drawLine(VP.screenX(p1.x), VP.screenY(p1.y), VP.screenX(p2.x), VP.screenY(p2.y))
-            r.drawLine(VP.screenX(p2.x), VP.screenY(p2.y), VP.screenX(p3.x), VP.screenY(p3.y))
-            r.drawLine(VP.screenX(p3.x), VP.screenY(p3.y), VP.screenX(p4.x), VP.screenY(p4.y))
-            r.drawLine(VP.screenX(p4.x), VP.screenY(p4.y), VP.screenX(p1.x), VP.screenY(p1.y))
+        render(){
         }
     }
 }
