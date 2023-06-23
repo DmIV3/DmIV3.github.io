@@ -1,0 +1,1 @@
+const DEFAULT_TEXTURE = `assets/defaultTexture.png`;
