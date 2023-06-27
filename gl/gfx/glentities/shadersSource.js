@@ -1,6 +1,6 @@
 const VSOURCE = 
 `   #version 300 es
-    precision highp float;
+    precision mediump float;
 
 
     layout(location=0) in vec3 a_Pos;
@@ -25,7 +25,7 @@ const VSOURCE =
 
 const FSOURCE = 
 `   #version 300 es
-    precision highp float;
+    precision mediump float;
 
     uniform sampler2D u_Sampler;
 
