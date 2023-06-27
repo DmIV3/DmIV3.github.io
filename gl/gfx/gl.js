@@ -89,7 +89,7 @@ class GL{
         GL.viewType = veiwType;
         let aspectRatio = GL.W / GL.H;
         if(veiwType === 0){
-            GL.projMatrix = Mat4.perspective(0.471239, aspectRatio, 0.001, 200);
+            GL.projMatrix = Mat4.perspective(0.471239, aspectRatio, 1, 200);
         }else{
             GL.projMatrix = Mat4.orthographic(-aspectRatio, aspectRatio, -1, 1, 0, 1000);
         }
