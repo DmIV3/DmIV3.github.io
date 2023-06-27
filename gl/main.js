@@ -4,6 +4,7 @@ let prevMX=0, prevMY=0;
 
 function start(){
   canvas = document.querySelector('#main-canvas');
+  setupInput(canvas);
   modelFileInput = document.querySelector('#model-file-input');
   modelFileInput.onchange = loadModel;
   textureFileInput = document.querySelector('#texture-file-input');
@@ -78,55 +79,58 @@ function loadTexture(){
 
 window.onload = start;
 window.onresize = resize;
-window.onmousemove = function(e){
-  mX = e.clientX;
-  mY = e.clientY;
+
+function setupInput(canvas){
+  canvas.onmousemove = function(e){
+    mX = e.clientX;
+    mY = e.clientY;
+  }
+  canvas.onwheel = (e)=>{mW = e.deltaY > 0 ? 1 : -1}
+  canvas.onmouseleave = e=> {mLD = mRD = false};
+  canvas.oncontextmenu = e=> e.preventDefault();
+  canvas.onmousedown = e=>{
+    e.preventDefault();
+    if(e.button === 0)
+      mLD = true;
+    else if(e.button === 2)
+      mRD = true;
+  }
+  canvas.onmouseup = e=> {
+    e.preventDefault();
+    if(e.button === 0)
+      mLD = false;
+    else if(e.button === 2)
+      mRD = false;
+  }
+
+  canvas.addEventListener('touchstart', e=>{
+    e.preventDefault();
+    if(e.touches[0] !== undefined){
+      prevMX = mX = e.touches[0].clientX;
+      prevMY = mY = e.touches[0].clientY;
+      mLD = true;
+    }
+  }, {passive: false});
+
+  canvas.addEventListener('touchend', e=>{
+    e.preventDefault();
+    if(e.touches[0] !== undefined){
+      mLD = false;
+    }
+  }, {passive: false});
+
+  canvas.addEventListener('touchcancel', e=>{
+    e.preventDefault();
+    if(e.touches[0] !== undefined){
+      mLD = false;
+    }
+  }, {passive: false});
+
+  canvas.addEventListener('touchmove', e=>{
+    e.preventDefault();
+    if(e.touches[0] !== undefined){
+      mX = e.touches[0].clientX;
+      mY = e.touches[0].clientY;
+    }
+  }, {passive: false});
 }
-window.onwheel = (e)=>{mW = e.deltaY > 0 ? 1 : -1}
-window.onmouseleave = e=> mD = false;
-window.oncontextmenu = e=> e.preventDefault();
-window.onmousedown = e=>{
-  e.preventDefault();
-  if(e.button === 0)
-    mLD = true;
-  else if(e.button === 2)
-    mRD = true;
-}
-window.onmouseup = e=> {
-  e.preventDefault();
-  if(e.button === 0)
-    mLD = false;
-  else if(e.button === 2)
-    mRD = false;
-}
-
-window.addEventListener('touchstart', e=>{
-  e.preventDefault();
-  if(e.touches[0] !== undefined){
-    prevMX = mX = e.touches[0].clientX;
-    prevMY = mY = e.touches[0].clientY;
-    mLD = true;
-  }
-}, {passive: false});
-
-window.addEventListener('touchend', e=>{
-  e.preventDefault();
-  if(e.touches[0] !== undefined){
-    mLD = false;
-  }
-}, {passive: false});
-
-window.addEventListener('touchcancel', e=>{
-  e.preventDefault();
-  if(e.touches[0] !== undefined){
-    mLD = false;
-  }
-}, {passive: false});
-
-window.addEventListener('touchmove', e=>{
-  e.preventDefault();
-  if(e.touches[0] !== undefined){
-    mX = e.touches[0].clientX;
-    mY = e.touches[0].clientY;
-  }
-}, {passive: false});
