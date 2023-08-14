@@ -51,6 +51,8 @@ function start(){
 
             Mat4.rotateY(modelMat, modelMat, 0.01);
             GL.render('testModel1', modelMat);
+
+            document.querySelector('h1').innerHTML = GL.gl;
         }else{
             ctx.fillStyle = 'green';
             ctx.fillRect(0, 0, canvas2D.width, canvas2D.height);
