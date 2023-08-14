@@ -33,7 +33,8 @@ function start(){
     Loader.loadImages(['ground_tiles', 'decorations', 'cstexture', 'cube', 'mage_char']);
 
     let camMat = Mat4.translate(Mat4.create(), Mat4.create(), Vec3.create(0, 0, -GL.h));
-    let modelMat = Mat4.scale(Mat4.create(), Mat4.create(), Vec3.create(GL.h/2, GL.h/2, GL.h/2));
+    let size = GL.w > GL.h ? GL.h/2 : GL.w/2;
+    let modelMat = Mat4.scale(Mat4.create(), Mat4.create(), Vec3.create(size, size, size));
     const shaders = ['std', 'testShader', 'shaderrr'];
     let iter = 2;
 
