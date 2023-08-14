@@ -220,7 +220,7 @@ export const GL = {
         this.canvas.width = this.w = window.innerWidth;
         this.canvas.height = this.h = window.innerHeight;
         // Mat4.ortho(this.projectionMatrix, -this.canvas.width/2, this.canvas.width/2, -this.canvas.height/2, this.canvas.height/2, -10000, 10000);
-        Mat4.perspective(this.projectionMatrix, Math.PI/3, this.w / this.h, 0.1, 100000);
+        Mat4.perspective(this.projectionMatrix, Math.PI/3, this.w / this.h, 1, 100000);
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
 }
