@@ -4,6 +4,7 @@ export const Watch = {
             init: function(){
                 let h1 = document.createElement('h1');
                 h1.style.color = 'white';
+                h1.style.fontSize = '16px';
                 h1.innerText = 'Hello'
                 document.body.appendChild(h1)
 
@@ -17,7 +18,7 @@ export const Watch = {
                     if(this.acl.y > this.maxRAcc){
                         this.maxRAcc = this.acl.y;
                     }
-                    h1.innerText = `${this.acl.y} _ min:${this.minRAcc} max:${this.maxRAcc}`;
+                    h1.innerText = `${(this.acl.y).toFixed(2)}  min:${(this.minRAcc).toFixed(2)} max:${(this.maxRAcc).toFixed(2)}`;
                 }).bind(this));
                 this.acl.start();
 
