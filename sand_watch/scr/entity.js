@@ -8,9 +8,9 @@ export const Watch = {
                 document.body.appendChild(h1)
                 const acl = new Accelerometer({ frequency: 60 });
                 acl.addEventListener("reading", () => {
-                    h1.innerText = `Acceleration along the X-axis ${acl.x}`;
+                    //h1.innerText = `Acceleration along the X-axis ${acl.x}`;
                     h1.innerText = `Acceleration along the Y-axis ${acl.y}`;
-                    h1.innerText = `Acceleration along the Z-axis ${acl.z}`;
+                    //h1.innerText = `Acceleration along the Z-axis ${acl.z}`;
                 });
 
                 log(acl)
