@@ -2,33 +2,20 @@ export const Watch = {
     create: function(){
         const newWatch = {
             init: function(){
-                let h1 = document.createElement('h1');
-                h1.style.color = 'white';
-                h1.innerText = 'Hello'
-                document.body.appendChild(h1)
-
-                
-                this.acl = new Accelerometer({ frequency: 60 });
+                this.acl = new Accelerometer({ frequency: 30 });
                 this.acl.addEventListener("reading", (function(e) {
-
                     this.rotation = Vec.angle({x: this.acl.x, y: -this.acl.y});
                     if(this.rotation < 0)
                         this.rotation = M.TWO_PI + this.rotation;
-
-                    this.rotation += M.HALF_PI + M.QUATER_PI;
+                    this.rotation += M.THREE_QUATERS_PI;
                     this.rotation = (this.rotation % M.TWO_PI + M.TWO_PI) % M.TWO_PI;
-        
-                    h1.innerText = '4x: ' +  this.acl.x.toFixed(2) + '  y:' + this.acl.y.toFixed(2) + '  r: ' + this.rotation.toFixed(2);
-
-                    this.stepRotation();
                 }).bind(this));
                 this.acl.start();
 
-                ////////////////////
-                this.fWidth = 30;
-                this.fHeight = 30;
-                this.cSize = 8;
-                let takenCells = 200;
+                this.fWidth = 20;
+                this.fHeight = 20;
+                this.cSize = 12;
+                let takenCells = 100;
 
                 this.angleSteps = [];
                 for(let i = Math.PI / 8, j = 0; i < M.TWO_PI; i += Math.PI / 4, j++){
@@ -62,7 +49,8 @@ export const Watch = {
 
                 
             },
-            update: function(deltaTime){
+            update: function(){
+                    this.rotationToDirectionIndex();
                     this.moveToNextField();
 
                     this.newStateUpdate(this.field_1, this.bufferField_1);
@@ -71,23 +59,6 @@ export const Watch = {
 
                     this.swapBuffers();
                     this.clearBuffers();
-                    // log('upd:    ' + this.countCells())
-                /////////////////////////
-                if(MOUSE.middlePressed){
-                }
-
-
-                if(MOUSE.left){
-                    this.rotation -= 0.1;
-                    this.rotation = (this.rotation % M.TWO_PI + M.TWO_PI) % M.TWO_PI;
-                    this.stepRotation();
-                }
-                if(MOUSE.right){
-                    this.rotation += 0.1;
-                    this.rotation = (this.rotation % M.TWO_PI + M.TWO_PI) % M.TWO_PI;
-                    this.stepRotation();
-                }
-                if(MOUSE.rightReleased){}
             },
             render: function(){
                 this.ctx1.fillStyle = this.ctx2.fillStyle = 'black';
@@ -97,27 +68,18 @@ export const Watch = {
                 for(let y = 0; y < this.fHeight; y++){
                     for(let x = 0; x < this.fWidth; x++){
                         const color = ~~((1 - y / this.fHeight) * 255);
-                        this.ctx1.fillStyle = this.field_1[y][x] === 0 ? 'white' : `rgb(${color}, ${5}, ${175})`;
+                        this.ctx1.fillStyle = this.field_1[y][x] === 0 ? '#EEEEEE' : `rgb(${color}, ${5}, ${175})`;
                         this.ctx1.fillRect(x*this.cSize+1, y*this.cSize+1, this.cSize-2, this.cSize-2);
                     }
                 }
 
                 for(let y = 0; y < this.fHeight; y++){
                     for(let x = 0; x < this.fWidth; x++){
-                        const color = ~~((1 - y / this.fHeight) * 255);
-                        this.ctx2.fillStyle = this.field_2[y][x] === 0 ? 'white' : `rgb(${color}, ${5}, ${175})`;
+                        const color = ~~(( y / this.fHeight) * 255);
+                        this.ctx2.fillStyle = this.field_2[y][x] === 0 ? '#EEEEEE' : `rgb(${color}, ${5}, ${175})`;
                         this.ctx2.fillRect(x*this.cSize+1, y*this.cSize+1, this.cSize-2, this.cSize-2);
                     }
                 }
-
-                let v = Vec.fromAngle(this.rotation);
-                Vec.scale(v, 50);
-                this.ctx1.strokeStyle = 'orange';
-                this.ctx1.lineWidth = 3;
-                this.ctx1.beginPath();
-                this.ctx1.moveTo(100, 100);
-                this.ctx1.lineTo(100 + v.x, 100 + v.y);
-                this.ctx1.stroke();
             },
             swapBuffers: function(){
                 let tmp = this.field_1;
@@ -138,6 +100,9 @@ export const Watch = {
                 }
             },
             fillField: function(field, num){
+                if(num > this.fWidth * this.fHeight)
+                    return;
+
                 while(num > 0){
                     let y = M.rndi(0, field.length-1);
                     let x = M.rndi(0, field[0].length-1);
@@ -164,7 +129,7 @@ export const Watch = {
                 }
                 return `field 1: ${count1},  field 2: ${count2},  total: ${count1 + count2} cells`;
             },
-            stepRotation: function(){
+            rotationToDirectionIndex: function(){
                 if(this.rotation >= this.angleSteps[7] || this.rotation < this.angleSteps[0])
                     this.index = 0;
                 else if(this.rotation >= this.angleSteps[0] && this.rotation < this.angleSteps[1])
