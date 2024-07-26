@@ -15,8 +15,8 @@ export const Watch = {
                     if(this.rotation < 0)
                         this.rotation = M.TWO_PI + this.rotation;
 
-                    // this.rotation += M.HALF_PI;
-                    // this.rotation = (this.rotation % M.TWO_PI + M.TWO_PI) % M.TWO_PI;
+                    this.rotation += M.HALF_PI;
+                    this.rotation = (this.rotation % M.TWO_PI + M.TWO_PI) % M.TWO_PI;
         
                     h1.innerText = '4x: ' +  this.acl.x.toFixed(2) + '  y:' + this.acl.y.toFixed(2) + '  r: ' + this.rotation.toFixed(2);
 
@@ -36,21 +36,14 @@ export const Watch = {
                 }
                 this.index = 0;
                 this.neigbourByIndex = [
-                    
-                    
-                    
-                    
-                    
+                    [ 1,  0,     1,  1,     1, -1],    //0
+                    [ 1,  1,     0,  1,     1,  0],    //1
                     [ 0,  1,    -1,  1,     1,  1],    //2
                     [-1,  1,    -1,  0,     0,  1],    //3
                     [-1,  0,    -1, -1,    -1,  1],    //4
                     [-1, -1,     0, -1,    -1,  0],    //5
                     [ 0, -1,     1, -1,    -1, -1],    //6
                     [ 1, -1,     1,  0,     0, -1],    //7
-                    [ 1,  0,     1,  1,     1, -1],    //0
-                    [ 1,  1,     0,  1,     1,  0],    //1
-                    
-                    
                 ];
 
                 this.rotation = 0;
