@@ -2,6 +2,10 @@ export const Watch = {
     create: function(){
         const newWatch = {
             init: function(){
+                let h1 = document.createElement('h1');
+                document.body.appendChild(h1);
+                h1.innerText = 'hello';
+
                 this.acl = new Accelerometer({ frequency: 30 });
                 this.acl.addEventListener("reading", (function(e) {
                     this.rotation = Vec.angle({x: this.acl.x, y: -this.acl.y});
@@ -9,6 +13,8 @@ export const Watch = {
                         this.rotation = M.TWO_PI + this.rotation;
                     this.rotation += M.THREE_QUATERS_PI;
                     this.rotation = (this.rotation % M.TWO_PI + M.TWO_PI) % M.TWO_PI;
+
+                    h1.innerText = this.rotation.toFixed(2);
                 }).bind(this));
                 this.acl.start();
 
@@ -101,7 +107,7 @@ export const Watch = {
             },
             fillField: function(field, num){
                 if(num > this.fWidth * this.fHeight)
-                    return;
+                    throw new Error('To many taken cells');
 
                 while(num > 0){
                     let y = M.rndi(0, field.length-1);
