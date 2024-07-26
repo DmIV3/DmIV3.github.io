@@ -11,7 +11,7 @@ export const Watch = {
                 this.acl = new Accelerometer({ frequency: 60 });
                 this.acl.addEventListener("reading", (function(e) {
 
-                    this.rotation = Vec.angle({x: -this.acl.y, y: this.acl.x});
+                    this.rotation = Vec.angle({x: this.acl.y, y: -this.acl.x});
                     if(this.rotation < 0)
                         this.rotation = M.TWO_PI + this.rotation;
 
