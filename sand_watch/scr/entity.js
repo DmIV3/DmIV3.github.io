@@ -2,12 +2,16 @@ export const Watch = {
     create: function(){
         const newWatch = {
             init: function(){
+                let h1 = document.createElement('h1');
+                h1.style.color = 'white';
+                h1.innerText = 'Hello'
+                document.body.appendChild(h1)
 
-                this.accelerometerVector = Vec.create();
-                this.acl = new Accelerometer({ frequency: 30 });
+                
+                this.acl = new Accelerometer({ frequency: 60 });
                 this.acl.addEventListener("reading", (function(e) {
-                    this.rotation = Vec.angle(this.acl);
-                    this.stepRotation();
+                    this.rotation = Vec.angle({x: this.acl.x, y: this.acl.y});
+                    h1.innerText = this.rotation.toFixed(2);
                 }).bind(this));
                 this.acl.start();
 
@@ -61,7 +65,6 @@ export const Watch = {
                     // log('upd:    ' + this.countCells())
                 /////////////////////////
                 if(MOUSE.middlePressed){
-                    log(this.rotation)
                 }
 
 
