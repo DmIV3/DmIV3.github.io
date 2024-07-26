@@ -10,8 +10,14 @@ export const Watch = {
                 
                 this.acl = new Accelerometer({ frequency: 60 });
                 this.acl.addEventListener("reading", (function(e) {
+
                     this.rotation = Vec.angle({x: this.acl.x, y: this.acl.y});
+                    if(this.rotation < 0)
+                        this.rotation = M.TWO_PI + this.rotation;
+
                     h1.innerText = this.rotation.toFixed(2);
+
+                    this.stepRotation();
                 }).bind(this));
                 this.acl.start();
 
