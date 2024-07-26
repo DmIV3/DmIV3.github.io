@@ -3,6 +3,7 @@ export const Watch = {
         const newWatch = {
             init: function(){
                 let h1 = document.createElement('h1');
+                h1.style.color = 'white';
                 document.body.appendChild(h1);
                 h1.innerText = 'hello';
 
