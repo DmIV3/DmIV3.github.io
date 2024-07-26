@@ -11,14 +11,14 @@ export const Watch = {
                 this.acl = new Accelerometer({ frequency: 60 });
                 this.acl.addEventListener("reading", (function(e) {
 
-                    this.rotation = Vec.angle({x: this.acl.y, y: -this.acl.x});
+                    this.rotation = Vec.angle({x: this.acl.x, y: -this.acl.y});
                     if(this.rotation < 0)
                         this.rotation = M.TWO_PI + this.rotation;
 
                     // this.rotation -= M.QUATER_PI;
                     // this.rotation = (this.rotation % M.TWO_PI + M.TWO_PI) % M.TWO_PI;
         
-                    h1.innerText = this.rotation.toFixed(2);
+                    h1.innerText = 'x: ' +  this.acl.x.toFixed(2) + '  y:' + this.acl.y.toFixed(2) + '  r: ' + this.rotation.toFixed(2);
 
                     this.stepRotation();
                 }).bind(this));
