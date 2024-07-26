@@ -6,7 +6,7 @@ export const Watch = {
                 this.accelerometerVector = Vec.create();
                 this.acl = new Accelerometer({ frequency: 30 });
                 this.acl.addEventListener("reading", (function(e) {
-                    this.rotation = Vec.angle(this.acl) + M.QUATER_PI;
+                    this.rotation = Vec.angle(this.acl);
                     this.stepRotation();
                 }).bind(this));
                 this.acl.start();
