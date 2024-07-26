@@ -18,7 +18,7 @@ export const Watch = {
                     // this.rotation += M.HALF_PI;
                     // this.rotation = (this.rotation % M.TWO_PI + M.TWO_PI) % M.TWO_PI;
         
-                    h1.innerText = '3x: ' +  this.acl.x.toFixed(2) + '  y:' + this.acl.y.toFixed(2) + '  r: ' + this.rotation.toFixed(2);
+                    h1.innerText = '4x: ' +  this.acl.x.toFixed(2) + '  y:' + this.acl.y.toFixed(2) + '  r: ' + this.rotation.toFixed(2);
 
                     this.stepRotation();
                 }).bind(this));
@@ -41,7 +41,7 @@ export const Watch = {
                     
                     
                     
-                    
+                    [ 0,  1,    -1,  1,     1,  1],    //2
                     [-1,  1,    -1,  0,     0,  1],    //3
                     [-1,  0,    -1, -1,    -1,  1],    //4
                     [-1, -1,     0, -1,    -1,  0],    //5
@@ -49,7 +49,7 @@ export const Watch = {
                     [ 1, -1,     1,  0,     0, -1],    //7
                     [ 1,  0,     1,  1,     1, -1],    //0
                     [ 1,  1,     0,  1,     1,  0],    //1
-                    [ 0,  1,    -1,  1,     1,  1],    //2
+                    
                     
                 ];
 
