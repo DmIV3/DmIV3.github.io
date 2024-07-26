@@ -15,7 +15,7 @@ export const Watch = {
                     if(this.rotation < 0)
                         this.rotation = M.TWO_PI + this.rotation;
 
-                    this.rotation += M.HALF_PI;
+                    this.rotation += M.HALF_PI + M.QUATER_PI;
                     this.rotation = (this.rotation % M.TWO_PI + M.TWO_PI) % M.TWO_PI;
         
                     h1.innerText = '4x: ' +  this.acl.x.toFixed(2) + '  y:' + this.acl.y.toFixed(2) + '  r: ' + this.rotation.toFixed(2);
