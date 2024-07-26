@@ -11,7 +11,7 @@ export const Watch = {
                 this.acl = new Accelerometer({ frequency: 60 });
                 this.acl.addEventListener("reading", (function(e) {
 
-                    h1.innerText = `y ${(this.acl.y).toFixed(2)}  x:${this.acl.x).toFixed(2)} z:${this.acl.z).toFixed(2)}`;
+                    h1.innerText = `y:${(this.acl.y).toFixed(2)}  x:${(this.acl.x).toFixed(2)} z:${(this.acl.z).toFixed(2)}`;
                 }).bind(this));
                 this.acl.start();
 
