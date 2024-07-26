@@ -1,5 +1,6 @@
 const M = {
     QUATER_PI: Math.PI / 4,
+    THREE_QUATERS_PI: (Math.PI / 4) * 3,
     HALF_PI: Math.PI / 2,
     TWO_PI: Math.PI * 2,
     angle: function(x1, y1, x2, y2){return Math.atan2(y2 - y1, x2 - x1)},
