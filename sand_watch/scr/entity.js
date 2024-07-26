@@ -8,17 +8,10 @@ export const Watch = {
                 h1.innerText = 'Hello'
                 document.body.appendChild(h1)
 
-                this.maxRAcc = -Infinity;
-                this.minRAcc = Infinity;
                 this.acl = new Accelerometer({ frequency: 60 });
                 this.acl.addEventListener("reading", (function(e) {
-                    if(this.acl.y < this.minRAcc){
-                        this.minRAcc = this.acl.y;
-                    }
-                    if(this.acl.y > this.maxRAcc){
-                        this.maxRAcc = this.acl.y;
-                    }
-                    h1.innerText = `${(this.acl.y).toFixed(2)}  min:${(this.minRAcc).toFixed(2)} max:${(this.maxRAcc).toFixed(2)}`;
+
+                    h1.innerText = `y ${(this.acl.y).toFixed(2)}  x:${this.acl.x).toFixed(2)} z:${this.acl.z).toFixed(2)}`;
                 }).bind(this));
                 this.acl.start();
 
