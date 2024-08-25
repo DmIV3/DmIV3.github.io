@@ -8,22 +8,22 @@ import { VJoystick } from "../libs/utils.js";
 export class Game {
     constructor(){
         this.tiles = new Array(16);
-        this.tiles[0] = new Tile(0,   [false, false, false, false], '../res/tile_0.png');
-        this.tiles[1] = new Tile(1,   [false, true,  false, false], '../res/tile_1.png');
-        this.tiles[2] = new Tile(2,   [false, false, false, true],  '../res/tile_2.png');
-        this.tiles[3] = new Tile(3,   [true,  false, false, false], '../res/tile_3.png');
-        this.tiles[4] = new Tile(4,   [false, false, true,  false], '../res/tile_4.png');
-        this.tiles[5] = new Tile(5,   [false, true,  false, true],  '../res/tile_5.png');
-        this.tiles[6] = new Tile(6,   [true,  true , false, false], '../res/tile_6.png');
-        this.tiles[7] = new Tile(7,   [false, true,  true,  false], '../res/tile_7.png');
-        this.tiles[8] = new Tile(8,   [true,  true,  true,  true],  '../res/tile_8.png');
-        this.tiles[9] = new Tile(9,   [true,  false, false, true],  '../res/tile_9.png');
-        this.tiles[10] = new Tile(10, [false, false, true,  true],  '../res/tile_10.png');
-        this.tiles[11] = new Tile(11, [true,  false, true,  false], '../res/tile_11.png');
-        this.tiles[12] = new Tile(12, [true,  true,  true,  false], '../res/tile_12.png');
-        this.tiles[13] = new Tile(13, [false, true,  true,  true],  '../res/tile_13.png');
-        this.tiles[14] = new Tile(14, [true,  false, true,  true],  '../res/tile_14.png');
-        this.tiles[15] = new Tile(15, [true,  true,  false, true],  '../res/tile_15.png');
+        this.tiles[0] = new Tile(0,   [false, false, false, false], '../wave_func_collapse/res/tile_0.png');
+        this.tiles[1] = new Tile(1,   [false, true,  false, false], '../wave_func_collapse/res/tile_1.png');
+        this.tiles[2] = new Tile(2,   [false, false, false, true],  '../wave_func_collapse/res/tile_2.png');
+        this.tiles[3] = new Tile(3,   [true,  false, false, false], '../wave_func_collapse/res/tile_3.png');
+        this.tiles[4] = new Tile(4,   [false, false, true,  false], '../wave_func_collapse/res/tile_4.png');
+        this.tiles[5] = new Tile(5,   [false, true,  false, true],  '../wave_func_collapse/res/tile_5.png');
+        this.tiles[6] = new Tile(6,   [true,  true , false, false], '../wave_func_collapse/res/tile_6.png');
+        this.tiles[7] = new Tile(7,   [false, true,  true,  false], '../wave_func_collapse/res/tile_7.png');
+        this.tiles[8] = new Tile(8,   [true,  true,  true,  true],  '../wave_func_collapse/res/tile_8.png');
+        this.tiles[9] = new Tile(9,   [true,  false, false, true],  '../wave_func_collapse/res/tile_9.png');
+        this.tiles[10] = new Tile(10, [false, false, true,  true],  '../wave_func_collapse/res/tile_10.png');
+        this.tiles[11] = new Tile(11, [true,  false, true,  false], '../wave_func_collapse/res/tile_11.png');
+        this.tiles[12] = new Tile(12, [true,  true,  true,  false], '../wave_func_collapse/res/tile_12.png');
+        this.tiles[13] = new Tile(13, [false, true,  true,  true],  '../wave_func_collapse/res/tile_13.png');
+        this.tiles[14] = new Tile(14, [true,  false, true,  true],  '../wave_func_collapse/res/tile_14.png');
+        this.tiles[15] = new Tile(15, [true,  true,  false, true],  '../wave_func_collapse/res/tile_15.png');
 
         this.width = 20;
         this.height = 20;
