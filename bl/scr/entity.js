@@ -158,11 +158,11 @@ class BallLigthning{
             document.createElement('img'),
             document.createElement('img'),
         ]
-        this.lightningSprites[0].src = '../img/lightning1.png';
-        this.lightningSprites[1].src = '../img/lightning2.png';
-        this.lightningSprites[2].src = '../img/lightning3.png';
-        this.lightningSprites[3].src = '../img/ball1.png';
-        this.lightningSprites[4].src = '../img/ball2.png';
+        this.lightningSprites[0].src = '/img/lightning1.png';
+        this.lightningSprites[1].src = '/img/lightning2.png';
+        this.lightningSprites[2].src = '/img/lightning3.png';
+        this.lightningSprites[3].src = '/img/ball1.png';
+        this.lightningSprites[4].src = '/img/ball2.png';
     }
 
     update(dt){
